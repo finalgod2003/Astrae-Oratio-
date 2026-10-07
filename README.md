@@ -47,19 +47,25 @@ npm run assets       # 重新生成 favicon / OG 分享图（public/）
 
 - `ga4Id`：GA4 衡量 ID（`G-XXXXXXXXXX`），留空则不加载 gtag。
 - `gscVerification`：Search Console「HTML 标记」验证的 content 值，留空则不输出。
-- Plausible：脚本是本地托管的 `public/js/p.js`（plausible.io 官方 `script.outbound-links.js`，含外链点击统计），`data-domain` 为 `astraeoratio.org`。
-  - `plausibleApi` 默认直接发到 `https://plausible.io/api/event`，任何托管都能用。
-  - 如果托管支持反向代理（Vercel / Cloudflare Pages），改成 `/api/event` 可绕过大部分广告拦截。
+- Plausible 完全本地化（第一方）：
+  - 脚本是本站托管的 `public/js/p.js`（plausible.io 官方 `script.outbound-links.js`，含外链点击统计），`data-domain` 为 `astraeoratio.org`。
+  - 事件发到本站 `/api/event`，由 Cloudflare Pages Function（`functions/api/event.js`）转发到 plausible.io，并带上访客 IP / UA，浏览器全程不直连 plausible.io。
+  - `public/_routes.json` 限定只有 `/api/*` 走 Functions，其余全部是静态文件，不消耗 Functions 免费额度。
   - Plausible 后台要先添加站点 `astraeoratio.org`，否则事件会被丢弃。
+  - 本地 `npm run dev` / `preview` 时没有 Functions，`/api/event` 不存在属正常（Plausible 脚本本身也会忽略 localhost）。
 
-## 部署（Vercel，推荐）
+## 部署（Cloudflare Pages）
 
-1. Vercel → Add New → Project → 导入 GitHub 仓库 `finalgod2003/Astrae-Oratio-`，框架自动识别为 Astro（配置见 `vercel.json`），直接 Deploy。之后每次 push 到 `main` 自动上线。
-2. Project → Settings → Domains：添加 `astraeoratio.org` 和 `www.astraeoratio.org`（www 设为 308 跳转到根域名）。
-3. Namecheap → Domain List → Manage → Advanced DNS：删除停放页记录（`parkingpage.namecheap.com` 的 CNAME、URL Redirect 记录），添加（以 Vercel 域名页显示的值为准）：
-   - `A` 记录，Host `@`，Value `76.76.21.21`
-   - `CNAME` 记录，Host `www`，Value `cname.vercel-dns.com`
-4. 上线后把 `src/data/site.ts` 里的 `plausibleApi` 改成 `/api/event`（`vercel.json` 已配好到 plausible.io 的代理）。
+1. Cloudflare → Add a domain → `astraeoratio.org`（Free 计划），按提示把 Namecheap 的 Nameservers 改成 Cloudflare 给的两条（Namecheap → Domain List → Manage → Nameservers → Custom DNS）。
+2. Cloudflare → Workers & Pages → Create → Pages → Connect to Git → 选择仓库 `finalgod2003/Astrae-Oratio-`：
+   - Production branch：`main`
+   - Framework preset：Astro；Build command：`npm run build`；Build output directory：`dist`
+   - 环境变量 `NODE_VERSION` = `22`（Astro 7 需要 Node ≥ 22.12；仓库里也有 `.nvmrc`）
+3. Pages 项目 → Custom domains：添加 `astraeoratio.org` 和 `www.astraeoratio.org`。
+4. www 跳转根域名：Cloudflare → 域名 → Rules → Redirect Rules，`www.astraeoratio.org/*` 301 到 `https://astraeoratio.org/${1}`。
+5. 之后每次 push 到 `main` 自动构建上线。
+
+`public/_headers` 为 `/_astro/*` 带哈希的静态资源设置了一年强缓存。
 
 ## 版权与官方素材
 

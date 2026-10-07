@@ -11,16 +11,16 @@ export const CONTACT_EMAIL = 'contact@astraeoratio.org';
  * Analytics & verification. Empty values switch the tag off.
  * - ga4Id: GA4 measurement ID ("G-XXXXXXXXXX").
  * - gscVerification: the `content` value of Search Console's HTML-tag verification.
- * - Plausible runs from a self-hosted copy of the script (public/js/p.js, outbound-links build).
- *   plausibleApi is where events are sent: "/api/event" when the host proxies it to plausible.io
- *   (see vercel.json / functions/api/event.js), otherwise "https://plausible.io/api/event".
+ * - Plausible is fully first-party: the script is a self-hosted copy (public/js/p.js, outbound-links
+ *   build) and events go to /api/event on this domain, which the Cloudflare Pages Function in
+ *   functions/api/event.js forwards to plausible.io.
  */
 export const ANALYTICS = {
   ga4Id: '',
   gscVerification: '',
   plausibleDomain: 'astraeoratio.org',
   plausibleScript: '/js/p.js',
-  plausibleApi: 'https://plausible.io/api/event',
+  plausibleApi: '/api/event',
 };
 
 export const NAV = [
