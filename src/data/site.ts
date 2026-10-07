@@ -16,7 +16,7 @@ export const CONTACT_EMAIL = 'contact@astraeoratio.org';
  *   functions/api/event.js forwards to plausible.io.
  */
 export const ANALYTICS = {
-  ga4Id: '',
+  ga4Id: 'G-5C9VXLMJWJ',
   gscVerification: '',
   plausibleDomain: 'astraeoratio.org',
   plausibleScript: '/js/p.js',
