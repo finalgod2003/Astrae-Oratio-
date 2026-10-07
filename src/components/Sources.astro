@@ -1,0 +1,34 @@
+---
+import type { Source } from '../data/site';
+
+interface Props {
+  items: Source[];
+  updated?: Date | string;
+}
+
+const { items, updated } = Astro.props;
+const updatedStr = updated ? (typeof updated === 'string' ? updated : updated.toISOString().slice(0, 10)) : null;
+---
+
+{
+  items.length > 0 && (
+    <section class="sources" aria-labelledby="sources-h">
+      <h2 id="sources-h">Sources</h2>
+      <ol>
+        {items.map((s) => (
+          <li>
+            <a href={s.url} rel="noopener">
+              {s.label}
+            </a>
+          </li>
+        ))}
+      </ol>
+      {updatedStr && (
+        <p class="meta-line" style="margin-top:.8rem">
+          Last checked against these sources on <time datetime={updatedStr}>{updatedStr}</time>. Spot an error? See the{' '}
+          <a href="/about/#corrections">corrections policy</a>.
+        </p>
+      )}
+    </section>
+  )
+}

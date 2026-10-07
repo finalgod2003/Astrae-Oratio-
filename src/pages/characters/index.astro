@@ -1,0 +1,207 @@
+---
+import Base from '../../layouts/Base.astro';
+import CharacterCard from '../../components/CharacterCard.astro';
+import RoleBadge from '../../components/RoleBadge.astro';
+import Sources from '../../components/Sources.astro';
+import { getCharacters, cbtRoster } from '../../lib/characters';
+import { FACTIONS } from '../../data/factions';
+import { ROLE_ORDER } from '../../data/roles';
+import { SRC, LAST_UPDATED } from '../../data/site';
+
+const characters = await getCharacters();
+const roster = cbtRoster(characters);
+const byFaction = FACTIONS.map((f) => ({ f, list: characters.filter((c) => c.data.faction === f.slug) })).filter(
+  (g) => g.list.length,
+);
+const rosterByRole = ROLE_ORDER.map((r) => ({ role: r, list: roster.filter((c) => c.data.role === r) })).filter(
+  (g) => g.list.length,
+);
+
+const path = '/characters/';
+const title = 'Astrae Oratio Characters List: All Magicians, Roles & Voice Actors';
+const description = `All ${characters.length} Astrae Oratio characters by clan, including the 18 playable in the CBT with their roles (Attacker, Breaker, Sweeper, Defender, Supporter, Anchor) and Japanese voice actors.`;
+
+const schema = [
+  {
+    '@type': 'CollectionPage',
+    name: title,
+    description,
+    url: `https://astraeoratio.org${path}`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: characters.length,
+      itemListElement: characters.map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: c.data.name,
+        url: `https://astraeoratio.org/characters/${c.id}/`,
+      })),
+    },
+  },
+];
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  {schema}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Characters', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Character list</p>
+      <h1>Astrae Oratio Characters</h1>
+      <p class="lede">
+        Every revealed character, grouped by clan. {roster.length} of them were playable in the October 2026 CBT; their in-game
+        role labels are shown on each card. Japanese names and voice actors (CV) follow the official site.
+      </p>
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time> · {characters.length} characters</p>
+    </header>
+
+    <nav class="jump card" aria-label="Jump to clan">
+      <a href="#cbt-roster">CBT roster</a>
+      {byFaction.map((g) => <a href={`#${g.f.slug}`}>{g.f.name}</a>)}
+    </nav>
+
+    <section class="section" aria-labelledby="cbt-roster">
+      <h2 id="cbt-roster">CBT playable roster (18) by role</h2>
+      <p class="sub">
+        Role labels as shown in the CBT build. Official role definitions are not out yet — see
+        <a href="/guides/combat/#roles">what each role likely means</a>.
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Role</th><th>Characters</th></tr>
+          </thead>
+          <tbody>
+            {
+              rosterByRole.map((g) => (
+                <tr>
+                  <td><RoleBadge role={g.role} /></td>
+                  <td>
+                    {g.list.map((c, i) => (
+                      <>
+                        <a href={`/characters/${c.id}/`}>{c.data.name}</a>
+                        {i < g.list.length - 1 ? ', ' : ''}
+                      </>
+                    ))}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    {
+      byFaction.map((g) => (
+        <section class="section" aria-labelledby={g.f.slug} style={`--fc:${g.f.color}`}>
+          <div class="fac-head">
+            <h2 id={g.f.slug}>{g.f.name}</h2>
+            <p class="fac-meta">
+              <span lang="ja">{g.f.nameJa}</span> · {g.f.kind}
+              {g.f.ward !== '—' && g.f.ward !== 'TBA' ? ` · ${g.f.ward}` : ''}
+            </p>
+            <p class="sub">
+              {g.f.summary} <a href={`/factions/#${g.f.slug}`}>About this group →</a>
+            </p>
+          </div>
+          <div class="char-grid">
+            {g.list.map((c) => (
+              <CharacterCard entry={c} />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="section" aria-labelledby="cv-list">
+      <h2 id="cv-list">Voice actors (Japanese cast)</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Character</th><th>Japanese name</th><th>Voice actor</th><th>CBT role</th></tr>
+          </thead>
+          <tbody>
+            {
+              characters.map((c) => (
+                <tr>
+                  <td><a href={`/characters/${c.id}/`}>{c.data.name}</a></td>
+                  <td lang="ja">{c.data.nameJa ?? '—'}</td>
+                  <td>
+                    {c.data.cv ? (
+                      <>
+                        {c.data.cv} <span lang="ja" class="dim">{c.data.cvJa}</span>
+                      </>
+                    ) : (
+                      <span class="dim">Not announced</span>
+                    )}
+                  </td>
+                  <td>{c.data.role ? <RoleBadge role={c.data.role} /> : <span class="dim">—</span>}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <Sources items={[SRC.officialCharacters, SRC.steparuRoster, SRC.invenCbtAnnounce, SRC.invenBreakdown]} updated={LAST_UPDATED} />
+  </div>
+</Base>
+
+<style>
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.4rem;
+    padding: 0.8rem;
+  }
+
+  .jump a {
+    font-size: 0.88rem;
+    text-decoration: none;
+    color: var(--text-dim);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+  }
+
+  .jump a:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .fac-head h2 {
+    margin: 0 0 0.2rem;
+    border-left: 4px solid var(--fc, var(--gold));
+    padding-left: 0.7rem;
+  }
+
+  .fac-meta {
+    color: var(--text-faint);
+    font-size: 0.9rem;
+    margin: 0 0 0.4rem;
+  }
+
+  .sub {
+    color: var(--text-dim);
+    max-width: var(--measure);
+  }
+
+  .char-grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  }
+
+  .dim {
+    color: var(--text-faint);
+  }
+</style>

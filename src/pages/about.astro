@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import { OFFICIAL, CONTACT_EMAIL, LAST_UPDATED } from '../data/site';
+
+const path = '/about/';
+const title = 'About Astrae Oratio Wiki: Sources, Editorial Policy & Corrections';
+const description =
+  'About this unofficial Astrae Oratio fan wiki: how we source information, how CBT and press details are labeled, our use of official material, and how to report corrections.';
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'About', href: path },
+  ]}
+>
+  <div class="wrap">
+    <article class="prose">
+      <header class="page-head">
+        <p class="kicker">About</p>
+        <h1>About this wiki</h1>
+        <p class="lede">
+          Astrae Oratio Wiki (astraeoratio.org) is an <strong>unofficial, fan-made</strong> guide to Astrae Oratio. It is not
+          affiliated with, endorsed by or sponsored by NC Corporation or Dynamis One.
+        </p>
+      </header>
+
+      <div class="callout warn">
+        <span class="callout-title">Looking for the official site?</span>
+        The official Astrae Oratio website is <a href={OFFICIAL.site} rel="noopener">astraeoratio.plaync.com</a>. Account,
+        payment and support questions should go to <a href={OFFICIAL.support} rel="noopener">NC customer support</a> — we can’t
+        help with those.
+      </div>
+
+      <h2 id="sources">How we source information</h2>
+      <p>Every page lists its sources at the bottom. In order of preference, we use:</p>
+      <ol>
+        <li><strong>Official material</strong> — the official website (all four languages), official notices and the official social accounts.</li>
+        <li><strong>Established press</strong> — outlets such as Inven Global, Gematsu and AUTOMATON, especially for interviews and event coverage.</li>
+        <li><strong>Hands-on footage and player reports</strong> — used for systems that only appeared in the closed beta, and always labeled as such.</li>
+      </ol>
+      <p>
+        Because Astrae Oratio has not launched, a lot of information comes from the October 2026 CBT. Those details are marked
+        as <strong>CBT</strong> information and may change. We don’t publish leaks, datamined content or rumors as fact.
+      </p>
+
+      <h2 id="names">Names and spellings</h2>
+      <p>
+        Character and term names follow the <strong>official English website</strong>, with Japanese names from the official
+        Japanese site. For characters without an official profile yet, we use the spelling shown in the CBT’s English build and
+        say so on the page.
+      </p>
+
+      <h2 id="assets">Official material and fan policy</h2>
+      <p>
+        We write our own summaries instead of copying official text, and we don’t host official artwork. Character pages use
+        original “star sign” graphics generated for this site. Official trailers are embedded directly from the official
+        YouTube channels. We follow the spirit of the official
+        <a href={OFFICIAL.fanPolicy} rel="noopener">fan content guidelines</a>; if a rights holder would like something
+        changed, please contact us and we’ll act promptly.
+      </p>
+
+      <h2 id="corrections">Corrections</h2>
+      <p>
+        Found a mistake, a missing source or something out of date? Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        with the page URL and, ideally, a link to the source. We correct factual errors as soon as we can verify them and
+        update the page’s date.
+      </p>
+
+      <h2 id="trademarks">Trademarks</h2>
+      <p>
+        Astrae Oratio and all related names, characters and images are trademarks or copyrighted material of Dynamis One,
+        licensed to NC Corporation. They are used here for identification and commentary only.
+      </p>
+
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </article>
+  </div>
+</Base>

@@ -1,0 +1,117 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { LAST_UPDATED } from '../../data/site';
+import { fmtDate } from '../../lib/schema';
+
+const guides = (await getCollection('guides')).sort((a, b) => a.data.order - b.data.order);
+
+const path = '/guides/';
+const title = 'Astrae Oratio Guides: Combat, Gacha, Progression & Beginner Help';
+const description =
+  'All Astrae Oratio guides in one place: the combat system (AP, Break, Parry, Dominion Skill), gacha and pity, progression and game modes, plus lore, factions and the glossary.';
+
+const extra = [
+  { href: '/release-date-download/', k: 'Getting started', t: 'Release date, download & requirements', d: 'Platforms, pre-registration, APK safety and device specs.' },
+  { href: '/world/', k: 'Lore', t: 'World & lore explained', d: 'Tokyo ’89, magic, Kleis, Artifacts and the Eras of magic.' },
+  { href: '/factions/', k: 'Lore', t: 'Factions & clans', d: 'Every magician group, its ward and its members.' },
+  { href: '/characters/', k: 'Characters', t: 'Character list', d: 'All characters with roles and voice actors.' },
+  { href: '/glossary/', k: 'Reference', t: 'Glossary', d: 'Lore, system and item terms in English and Japanese.' },
+  { href: '/tier-list/', k: 'Meta', t: 'Tier list', d: 'Coming once launch-build data is available.' },
+];
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Guides', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Guides</p>
+      <h1>Astrae Oratio Guides</h1>
+      <p class="lede">
+        System breakdowns based on the October 2026 CBT, the official CBT guidebook and developer interviews. Every guide marks
+        what is official and what may change before launch.
+      </p>
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </header>
+
+    <section aria-labelledby="systems">
+      <h2 id="systems" class="visually-hidden">System guides</h2>
+      <div class="grid grid-3">
+        {
+          guides.map((g) => (
+            <a class="card guide-card" href={`/guides/${g.id}/`}>
+              <span class="g-k">System guide</span>
+              <span class="g-t">{g.data.h1}</span>
+              <span class="g-d">{g.data.description}</span>
+              <span class="g-m">Updated {fmtDate(g.data.updated)}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="more">
+      <h2 id="more">More reference pages</h2>
+      <div class="grid grid-3">
+        {
+          extra.map((e) => (
+            <a class="card guide-card" href={e.href}>
+              <span class="g-k">{e.k}</span>
+              <span class="g-t">{e.t}</span>
+              <span class="g-d">{e.d}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .guide-card {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .guide-card:hover {
+    color: var(--text);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .g-k {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .g-t {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .g-d {
+    font-size: 0.93rem;
+    color: var(--text-dim);
+  }
+
+  .g-m {
+    font-size: 0.82rem;
+    color: var(--text-faint);
+  }
+</style>

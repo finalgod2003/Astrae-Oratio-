@@ -1,0 +1,89 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Sources from '../../components/Sources.astro';
+import { articleSchema, isoDate } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((entry) => ({ params: { slug: entry.id }, props: { entry, guides } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'guides'>;
+  guides: CollectionEntry<'guides'>[];
+}
+
+const { entry, guides } = Astro.props;
+const d = entry.data;
+const { Content, headings } = await render(entry);
+const toc = headings.filter((h) => h.depth === 2);
+const others = guides.filter((g) => g.id !== entry.id).sort((a, b) => a.data.order - b.data.order);
+
+const path = `/guides/${entry.id}/`;
+const schema = [articleSchema({ headline: d.title, description: d.description, path, published: d.updated, modified: d.updated })];
+---
+
+<Base
+  title={d.title}
+  description={d.description}
+  {path}
+  {schema}
+  ogType="article"
+  modified={d.updated}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Guides', href: '/guides/' },
+    { name: d.h1, href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">System guide</p>
+      <h1>{d.h1}</h1>
+      <p class="lede">{d.description}</p>
+      <p class="meta-line">Last updated <time datetime={isoDate(d.updated)}>{isoDate(d.updated)}</time></p>
+    </header>
+
+    <div class="with-aside">
+      <article class="prose">
+        <div class="callout cbt">
+          <span class="callout-title">Pre-launch information</span>
+          Based on {d.basis}. Astrae Oratio has not launched yet, so systems, names and numbers can change.
+        </div>
+        <Content />
+        <Sources items={d.sources} updated={d.updated} />
+      </article>
+      <aside>
+        {
+          toc.length > 0 && (
+            <nav class="card toc" aria-label="On this page">
+              <h2>On this page</h2>
+              <ol>
+                {toc.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+        <div class="card toc" style="margin-top:1rem">
+          <h2>More guides</h2>
+          <ol>
+            {
+              others.map((g) => (
+                <li>
+                  <a href={`/guides/${g.id}/`}>{g.data.h1}</a>
+                </li>
+              ))
+            }
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/characters/">Character list</a></li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Base>

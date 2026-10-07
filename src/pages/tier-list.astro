@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+import CharacterCard from '../components/CharacterCard.astro';
+import RoleBadge from '../components/RoleBadge.astro';
+import { getCharacters, cbtRoster } from '../lib/characters';
+import { ROLE_ORDER } from '../data/roles';
+import tierList from '../data/tier-list.json';
+
+const live = tierList.status === 'live';
+const characters = await getCharacters();
+const byId = new Map(characters.map((c) => [c.id, c]));
+const roster = cbtRoster(characters);
+const rosterByRole = ROLE_ORDER.map((r) => ({ role: r, list: roster.filter((c) => c.data.role === r) })).filter(
+  (g) => g.list.length,
+);
+
+const path = '/tier-list/';
+const title = live ? 'Astrae Oratio Tier List: Best Characters Ranked' : 'Astrae Oratio Tier List (Coming Soon)';
+const description = live
+  ? `Astrae Oratio tier list ranking every playable character${tierList.basis ? ` (${tierList.basis})` : ''}.`
+  : 'There is no reliable Astrae Oratio tier list yet: the game has not launched. Here is the CBT roster by role and how we will rank characters.';
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  noindex={!live}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Tier list', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Meta</p>
+      <h1>Astrae Oratio Tier List</h1>
+      <p class="lede">{description}</p>
+      <p class="meta-line">Last updated <time datetime={tierList.updated}>{tierList.updated}</time></p>
+    </header>
+
+    {
+      live ? (
+        <div class="tiers">
+          {tierList.tiers.map((t) => (
+            <section class="tier" aria-label={`${t.tier} tier`}>
+              <p class="tier-label">{t.tier}</p>
+              <div class="tier-row">
+                {t.characters
+                  .map((id) => byId.get(id))
+                  .filter((c) => !!c)
+                  .map((c) => (
+                    <CharacterCard entry={c!} compact />
+                  ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <article class="prose">
+          <div class="callout">
+            <span class="callout-title">Why there’s no tier list yet</span>
+            A five-day closed beta with wiped accounts, no purchases and unfinished balance isn’t enough to rank characters
+            honestly. Kits, rarities and numbers will change before the 2027 launch. We’ll publish a tier list once launch-build
+            data exists — and explain the reasoning for every placement.
+          </div>
+
+          <h2 id="cbt-roles">CBT roster by role</h2>
+          <p>
+            In the meantime, this is how the 18 CBT characters were labeled in-game. Roles say what a character is built to do,
+            not how strong they are.
+          </p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>Role</th><th>Characters</th></tr>
+              </thead>
+              <tbody>
+                {rosterByRole.map((g) => (
+                  <tr>
+                    <td><RoleBadge role={g.role} /></td>
+                    <td>
+                      {g.list.map((c, i) => (
+                        <>
+                          <a href={`/characters/${c.id}/`}>{c.data.name}</a>
+                          {i < g.list.length - 1 ? ', ' : ''}
+                        </>
+                      ))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="method">How we’ll rank characters</h2>
+          <ul>
+            <li><strong>Separate lists by content</strong> — story, Score Trial and raids reward different strengths.</li>
+            <li><strong>Role-aware</strong> — a Supporter is judged on how much they enable a team, not on raw damage.</li>
+            <li><strong>Free-to-play friendly notes</strong> — guaranteed units like <a href="/characters/doll/">Doll</a> get extra context.</li>
+            <li><strong>Dated and sourced</strong> — every update says which version and data it’s based on.</li>
+          </ul>
+          <p>
+            Until then, the <a href="/guides/combat/">combat guide</a> explains how Break, tagging and Dominion Skills interact —
+            the mechanics any future ranking will hinge on.
+          </p>
+        </article>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .tiers {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .tier {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 0.8rem;
+    align-items: start;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.8rem;
+  }
+
+  .tier-label {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-align: center;
+    margin: 0;
+  }
+
+  .tier-row {
+    display: grid;
+    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+</style>

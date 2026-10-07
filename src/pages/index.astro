@@ -1,0 +1,531 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import CharacterCard from '../components/CharacterCard.astro';
+import YouTube from '../components/YouTube.astro';
+import Faq from '../components/Faq.astro';
+import { getCharacters, cbtRoster } from '../lib/characters';
+import { websiteSchema, orgSchema, gameSchema, faqSchema, fmtDate, type QA } from '../lib/schema';
+import { RELEASE, OFFICIAL, VIDEOS, LAST_UPDATED } from '../data/site';
+import codes from '../data/codes.json';
+import tierList from '../data/tier-list.json';
+
+const characters = await getCharacters();
+const roster = cbtRoster(characters);
+const others = characters.filter((c) => !c.data.cbtPlayable);
+const news = (await getCollection('news')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 4);
+
+const faq: QA[] = [
+  {
+    q: 'What is Astrae Oratio?',
+    a: 'Astrae Oratio is an anime-style “Shindenki” magic RPG developed by Dynamis One and published by NC. You play the Shunin, an ordinary Tokyo civil servant put in charge of the city’s hidden magicians, in a Tokyo of 1889 that runs about a century ahead of real history.',
+  },
+  {
+    q: 'When is the Astrae Oratio release date?',
+    a: 'There is no exact date yet. The official release window is 2027 for iOS and Android, with a PC version after the mobile launch. A global closed beta ran from October 2 to 6, 2026.',
+  },
+  {
+    q: 'Can I pre-register for Astrae Oratio?',
+    a: 'Not yet. Pre-registration had not opened as of October 7, 2026. Follow the official X account @Asora_EN or the official website to hear when it does.',
+  },
+  {
+    q: 'Is Astrae Oratio on PC?',
+    a: 'A PC version is confirmed, but it comes after the mobile launch and has no date. The CBT was mobile-only and did not support emulators.',
+  },
+  {
+    q: 'Is there an Astrae Oratio APK download?',
+    a: 'No. The game is not released, and the CBT client was only sent to selected testers. Any APK on third-party sites is unofficial and may be unsafe.',
+  },
+  {
+    q: 'How many characters are in Astrae Oratio?',
+    a: `The official site profiles ${characters.filter((c) => c.data.status === 'official').length - 1} named characters (plus the Shunin), and 18 characters were playable in the October 2026 CBT. The developers have said to expect around 30 characters at launch.`,
+  },
+];
+
+const title = 'Astrae Oratio Wiki — Characters, Release Date, Codes & Guides';
+const description =
+  'Astrae Oratio wiki and guide: release date (2027 on iOS & Android, PC later), download and CBT info, all characters with roles and voice actors, world lore, combat and gacha guides, codes and tier list.';
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/"
+  schema={[websiteSchema(), orgSchema(), gameSchema(), faqSchema(faq)]}
+>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="kicker">Unofficial wiki &amp; guide</p>
+        <h1>Astrae Oratio</h1>
+        <p class="hero-sub">
+          <span lang="ja">アストラエ・オラティオ</span> — the Shindenki magic RPG from Dynamis One and NC. Characters,
+          release date, CBT recap, lore and system guides, kept up to date from official sources.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="/release-date-download/">Release date &amp; download</a>
+          <a class="btn" href="/characters/">All characters</a>
+          <a class="btn" href="/guides/">Guides</a>
+        </div>
+      </div>
+      <aside class="hero-facts card" aria-label="Quick facts">
+        <p class="facts-title">Quick facts</p>
+        <dl class="facts">
+          <dt>Status</dt>
+          <dd><span class="status">{RELEASE.status}</span></dd>
+          <dt>Release</dt>
+          <dd>{RELEASE.mobile}<br /><span class="dim">{RELEASE.pc}</span></dd>
+          <dt>Pre-register</dt>
+          <dd>{RELEASE.preRegistration}</dd>
+          <dt>Last test</dt>
+          <dd><a href="/news/global-cbt-wrap-up-october-2026/">{RELEASE.lastTest}</a></dd>
+          <dt>Developer</dt>
+          <dd>{RELEASE.developer}</dd>
+          <dt>Publisher</dt>
+          <dd>{RELEASE.publisher}</dd>
+          <dt>Setting</dt>
+          <dd>Tokyo ’89 (1889, a century ahead)</dd>
+          <dt>Voice</dt>
+          <dd>{RELEASE.voice}</dd>
+          <dt>Text</dt>
+          <dd>{RELEASE.textLanguages.join(', ')}</dd>
+        </dl>
+        <p class="meta-line">Updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="section" aria-labelledby="what">
+      <div class="two-col">
+        <div class="prose">
+          <h2 id="what">What is Astrae Oratio?</h2>
+          <p>
+            <strong>Astrae Oratio</strong> (often shortened to <em>Asora</em>) is a free-to-play anime RPG for mobile and,
+            later, PC. It is developed by <strong>Dynamis One</strong> — a studio led by former <em>Blue Archive</em> staff — and
+            published worldwide by <strong>NC</strong>. The official genre tag is “Shindenki Magic RPG”: urban fantasy built
+            around <strong>magic and public administration</strong>.
+          </p>
+          <p>
+            You play the <a href="/characters/shunin/">Shunin</a>, a low-ranking Tokyo civil servant with no magic, who is
+            suddenly transferred to the <a href="/factions/#special-district-office">Special District Office</a> — the agency that
+            quietly manages every magician hiding in the city. The setting is <a href="/world/#tokyo-89">Tokyo ’89</a>: officially
+            the year 1889, but in a world running about a hundred years ahead of ours, so it looks like late-1980s Tokyo,
+            with Tokyo Tower just completed.
+          </p>
+          <p>
+            The story plays out visual-novel style with full Japanese voice acting, and battles are
+            <a href="/guides/combat/">turn-based with real-time parries</a>, AP chaining and Dominion Skills. Between missions you
+            spend <a href="/guides/progression/#free-time">Free Time</a> visiting magicians across Tokyo’s 23 wards.
+          </p>
+        </div>
+        <div class="card mini-links">
+          <p class="facts-title">Start here</p>
+          <ul>
+            <li><a href="/world/">World &amp; lore explained</a></li>
+            <li><a href="/factions/">Factions &amp; clans</a></li>
+            <li><a href="/glossary/">Glossary of terms</a></li>
+            <li><a href="/guides/combat/">Combat system</a></li>
+            <li><a href="/guides/gacha/">Gacha &amp; pity</a></li>
+            <li><a href="/news/global-cbt-wrap-up-october-2026/">CBT recap</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="release">
+      <div class="section-head">
+        <h2 id="release">Release date, download &amp; PC</h2>
+        <a href="/release-date-download/">Full release &amp; download guide →</a>
+      </div>
+      <div class="grid stats">
+        <article class="card stat">
+          <p class="stat-label">Release date</p>
+          <p class="stat-value">{RELEASE.window}</p>
+          <p class="stat-note">iOS &amp; Android. No exact day announced yet (window confirmed Sep 16, 2026).</p>
+        </article>
+        <article class="card stat">
+          <p class="stat-label">Pre-registration</p>
+          <p class="stat-value"><span class="status no">Not open</span></p>
+          <p class="stat-note">
+            Follow <a href={OFFICIAL.socials[0].url} rel="noopener">@Asora_EN</a> to hear first. <a
+              href="/release-date-download/#pre-register">How to get notified</a>
+          </p>
+        </article>
+        <article class="card stat">
+          <p class="stat-label">PC version</p>
+          <p class="stat-value">After mobile</p>
+          <p class="stat-note">Confirmed, no date. The CBT was mobile-only. <a href="/release-date-download/#pc">PC details</a></p>
+        </article>
+        <article class="card stat">
+          <p class="stat-label">Download / APK</p>
+          <p class="stat-value"><span class="status no">Unavailable</span></p>
+          <p class="stat-note">
+            No public build exists. Avoid third-party APKs. <a href="/release-date-download/#download">Why</a>
+          </p>
+        </article>
+        <article class="card stat">
+          <p class="stat-label">Latest test</p>
+          <p class="stat-value">CBT ended</p>
+          <p class="stat-note">Global CBT ran Oct 2–6, 2026 on iOS &amp; Android. <a href="/news/global-cbt-wrap-up-october-2026/">Recap</a></p>
+        </article>
+        <article class="card stat">
+          <p class="stat-label">Requirements</p>
+          <p class="stat-value">SD 7 Gen 1 / A14</p>
+          <p class="stat-note">Minimum chip for the CBT build, 10 GB free space. <a href="/release-date-download/#requirements">Full specs</a></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="chars">
+      <div class="section-head">
+        <h2 id="chars">Characters</h2>
+        <a href="/characters/">All {characters.length} characters →</a>
+      </div>
+      <p class="section-lede">
+        The <strong>18 characters playable in the CBT</strong>, with their in-game role labels. Profiles cover clan, voice
+        actor (CV), magic and story role.
+      </p>
+      <div class="char-grid">
+        {roster.map((c) => <CharacterCard entry={c} compact />)}
+      </div>
+      <p class="also">
+        Also revealed:
+        {
+          others.map((c, i) => (
+            <>
+              <a href={`/characters/${c.id}/`}>{c.data.name}</a>
+              {i < others.length - 1 ? ', ' : '.'}
+            </>
+          ))
+        }
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="guides">
+      <div class="section-head">
+        <h2 id="guides">Guides &amp; systems</h2>
+        <a href="/guides/">All guides →</a>
+      </div>
+      <div class="grid grid-3">
+        <a class="card link-card" href="/guides/combat/">
+          <span class="lc-k">Combat</span>
+          <span class="lc-t">AP, Break, Parry &amp; Dominion Skill</span>
+          <span class="lc-d">How the turn-based battle system works, plus the six CBT roles.</span>
+        </a>
+        <a class="card link-card" href="/guides/gacha/">
+          <span class="lc-k">Gacha</span>
+          <span class="lc-t">Oratio Gacha &amp; Vignettes</span>
+          <span class="lc-d">Banner types, currencies, rarity and the pity point system.</span>
+        </a>
+        <a class="card link-card" href="/guides/progression/">
+          <span class="lc-k">Progression</span>
+          <span class="lc-t">Modes &amp; materials</span>
+          <span class="lc-d">Story packs, Score Trial, Simulation Room, Free Time and items.</span>
+        </a>
+        <a class="card link-card" href="/world/">
+          <span class="lc-k">Lore</span>
+          <span class="lc-t">Tokyo ’89, magic &amp; dominions</span>
+          <span class="lc-d">Kleis, Artifacts, Trials of Domination and the Eras of magic.</span>
+        </a>
+        <a class="card link-card" href="/factions/">
+          <span class="lc-k">Factions</span>
+          <span class="lc-t">Clans of magical Tokyo</span>
+          <span class="lc-d">Every clan and organization, with members and wards.</span>
+        </a>
+        <a class="card link-card" href="/glossary/">
+          <span class="lc-k">Glossary</span>
+          <span class="lc-t">Terms A–Z</span>
+          <span class="lc-d">English and Japanese names for lore, systems and items.</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="codes">
+      <div class="section-head">
+        <h2 id="codes">Codes, reroll &amp; tier list</h2>
+      </div>
+      <div class="grid grid-2">
+        <a class="card link-card" href="/codes/">
+          <span class="lc-k">Redeem codes</span>
+          <span class="lc-t">{codes.status === 'live' ? `${codes.active.length} active codes` : 'No codes yet'}</span>
+          <span class="lc-d">
+            {
+              codes.status === 'live'
+                ? 'All working Astrae Oratio codes and how to redeem them.'
+                : 'Codes usually arrive with pre-registration or launch. This page will list every working code and the reroll guide.'
+            }
+          </span>
+        </a>
+        <a class="card link-card" href="/tier-list/">
+          <span class="lc-k">Tier list</span>
+          <span class="lc-t">{tierList.status === 'live' ? 'Current tier list' : 'Coming closer to launch'}</span>
+          <span class="lc-d">
+            {
+              tierList.status === 'live'
+                ? 'Our ranking of every playable character.'
+                : 'A fair tier list needs launch-build data. Until then, see the CBT roles in the combat guide.'
+            }
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="videos-h" id="videos">
+      <div class="section-head">
+        <h2 id="videos-h">Official trailers</h2>
+        <a href={OFFICIAL.socials[3].url} rel="noopener">Official YouTube →</a>
+      </div>
+      <div class="grid grid-2">
+        <YouTube id={VIDEOS.prologueDigest.id} title={`${VIDEOS.prologueDigest.title} (Sep 2026)`} />
+        <YouTube id={VIDEOS.prologueAnimation.id} title={`${VIDEOS.prologueAnimation.title} (Sep 2026)`} />
+        <YouTube id={VIDEOS.characterIntro.id} title={`${VIDEOS.characterIntro.title} (Jun 2026)`} />
+        <YouTube id={VIDEOS.moaPickup.id} title={`${VIDEOS.moaPickup.title} (Oct 2026)`} />
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="news">
+      <div class="section-head">
+        <h2 id="news">Latest news</h2>
+        <a href="/news/">News &amp; update log →</a>
+      </div>
+      <ul class="news-list">
+        {
+          news.map((n) => (
+            <li>
+              <time datetime={n.data.date.toISOString().slice(0, 10)}>{fmtDate(n.data.date)}</time>
+              <a href={`/news/${n.id}/`}>{n.data.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="faq">
+      <h2 id="faq">Astrae Oratio FAQ</h2>
+      <Faq items={faq} open={0} />
+    </section>
+
+    <section class="section" aria-labelledby="official">
+      <h2 id="official">Official links</h2>
+      <p class="section-lede">
+        This is a fan site. For announcements straight from the source, use the official channels:
+      </p>
+      <ul class="official-links">
+        <li><a href={OFFICIAL.site} rel="noopener">Official website</a></li>
+        {
+          OFFICIAL.socials.map((s) => (
+            <li>
+              <a href={s.url} rel="noopener">
+                {s.label} <span class="dim">{s.handle}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line-soft);
+    background:
+      radial-gradient(60rem 30rem at 85% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+      radial-gradient(40rem 24rem at 0% 110%, color-mix(in srgb, var(--vermilion) 12%, transparent), transparent 60%);
+  }
+
+  .hero-inner {
+    display: grid;
+    gap: 2rem;
+    padding: 3.2rem 0 3rem;
+    align-items: center;
+  }
+
+  @media (min-width: 960px) {
+    .hero-inner {
+      grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.9fr);
+      padding: 4.4rem 0 4rem;
+    }
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 9vw, 5.6rem);
+    line-height: 0.95;
+    margin-bottom: 1rem;
+    letter-spacing: 0.005em;
+  }
+
+  .hero-sub {
+    font-size: 1.14rem;
+    color: var(--text-dim);
+    max-width: 38rem;
+  }
+
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.4rem;
+  }
+
+  .facts-title {
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 0.8rem;
+  }
+
+  .hero-facts .meta-line {
+    margin: 0.9rem 0 0;
+  }
+
+  .dim {
+    color: var(--text-faint);
+  }
+
+  .two-col {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 960px) {
+    .two-col {
+      grid-template-columns: minmax(0, 1fr) 280px;
+      align-items: start;
+    }
+
+    .two-col .mini-links {
+      margin-top: 3.4rem;
+    }
+  }
+
+  .mini-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .section-lede {
+    color: var(--text-dim);
+    max-width: var(--measure);
+  }
+
+  .stats {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 0 0 0.3rem;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 0.4rem;
+  }
+
+  .stat-value .status {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+  }
+
+  .stat-note {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .char-grid {
+    display: grid;
+    gap: 0.8rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+  }
+
+  .also {
+    margin-top: 1.1rem;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+  }
+
+  .link-card {
+    display: grid;
+    gap: 0.3rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .link-card:hover {
+    color: var(--text);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .lc-k {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .lc-t {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .lc-d {
+    font-size: 0.93rem;
+    color: var(--text-dim);
+  }
+
+  .news-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .news-list li {
+    display: grid;
+    gap: 0.15rem 1rem;
+    padding: 0.85rem 1.1rem;
+    margin: 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .news-list li:last-child {
+    border-bottom: 0;
+  }
+
+  @media (min-width: 700px) {
+    .news-list li {
+      grid-template-columns: 7.5rem 1fr;
+    }
+  }
+
+  .news-list time {
+    color: var(--text-faint);
+    font-size: 0.88rem;
+  }
+
+  .official-links {
+    columns: 2 16rem;
+    padding-left: 1.1rem;
+  }
+</style>

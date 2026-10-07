@@ -1,0 +1,12 @@
+{
+  "status": "upcoming",
+  "updated": "2026-10-07",
+  "basis": "",
+  "note": "No tier list yet: rankings need launch-build data. Set status to \"live\" and fill the tiers (character slugs from src/content/characters) to publish; the page then becomes indexable and is added to the sitemap.",
+  "tiers": [
+    { "tier": "S", "characters": [] },
+    { "tier": "A", "characters": [] },
+    { "tier": "B", "characters": [] },
+    { "tier": "C", "characters": [] }
+  ]
+}

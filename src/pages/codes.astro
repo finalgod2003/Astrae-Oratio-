@@ -1,0 +1,130 @@
+---
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import { faqSchema, type QA } from '../lib/schema';
+import { OFFICIAL } from '../data/site';
+import codes from '../data/codes.json';
+
+type Code = { code: string; rewards: string; added?: string; expires?: string };
+const live = codes.status === 'live';
+const active = codes.active as Code[];
+const expired = codes.expired as Code[];
+
+const monthYear = new Date(codes.updated).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const path = '/codes/';
+const title = live
+  ? `Astrae Oratio Codes (${monthYear}): All Active Redeem Codes & Reroll Guide`
+  : 'Astrae Oratio Codes & Reroll Guide';
+const description = live
+  ? `All working Astrae Oratio redeem codes for ${monthYear}, their rewards and how to redeem them, plus a reroll guide.`
+  : 'Astrae Oratio has no redeem codes yet because the game has not launched. When codes and rerolling become possible, this page will list them.';
+
+const faq: QA[] = [
+  {
+    q: 'Are there any Astrae Oratio codes right now?',
+    a: live ? `Yes — ${active.length} active codes are listed on this page.` : 'No. The game has not launched, and no official redeem codes have been released.',
+  },
+  {
+    q: 'Where will Astrae Oratio codes be announced?',
+    a: 'Most likely on the official X accounts (such as @Asora_EN), the official website and launch or livestream events. We add every code we can verify.',
+  },
+  {
+    q: 'Can you reroll in Astrae Oratio?',
+    a: live
+      ? 'See the reroll section on this page.'
+      : 'Not yet. Reroll methods depend on how the launch build handles accounts and the starting gacha, so a guide will come after release.',
+  },
+];
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  noindex={!live}
+  schema={[faqSchema(faq)]}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Codes & reroll', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Codes · Reroll</p>
+      <h1>Astrae Oratio Codes &amp; Reroll Guide</h1>
+      <p class="lede">{description}</p>
+      <p class="meta-line">Last checked <time datetime={codes.updated}>{codes.updated}</time></p>
+    </header>
+
+    <article class="prose">
+      {
+        live ? (
+          <>
+            <h2 id="active">Active codes</h2>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Code</th><th>Rewards</th><th>Added</th><th>Expires</th></tr>
+                </thead>
+                <tbody>
+                  {active.map((c) => (
+                    <tr>
+                      <td><code>{c.code}</code></td>
+                      <td>{c.rewards}</td>
+                      <td>{c.added ?? '—'}</td>
+                      <td>{c.expires ?? 'Unknown'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {expired.length > 0 && (
+              <>
+                <h2 id="expired">Expired codes</h2>
+                <ul>
+                  {expired.map((c) => (
+                    <li>
+                      <code>{c.code}</code> — {c.rewards}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </>
+        ) : (
+          <div class="callout">
+            <span class="callout-title">No codes yet</span>
+            Astrae Oratio is scheduled for 2027 on iOS and Android. Gacha games usually start handing out redeem codes around
+            pre-registration milestones, launch day and livestreams. We will list each code here as soon as it is confirmed —
+            and remove anything that stops working.
+          </div>
+        )
+      }
+
+      <h2 id="where">Where codes come from</h2>
+      <ul>
+        <li>The official X accounts — <a href={OFFICIAL.socials[0].url} rel="noopener">@Asora_EN</a>, <a href={OFFICIAL.socials[1].url} rel="noopener">@Asora_JP</a>, <a href={OFFICIAL.socials[2].url} rel="noopener">@Asora_KR</a></li>
+        <li>The <a href={OFFICIAL.news} rel="noopener">official news page</a></li>
+        <li>Launch events, livestreams and collaborations</li>
+      </ul>
+      <p>
+        Codes in gacha games are often region- or server-specific, so a Japanese code may not work on the global version. We note
+        the region for each code once there are any.
+      </p>
+
+      <h2 id="reroll">Reroll guide</h2>
+      <p>
+        Rerolling isn’t possible yet. During the CBT, each tester’s access was locked to a single device and all data was wiped,
+        so there was nothing to reroll. Once the game launches we will test whether accounts can be reset or guest accounts
+        can be used, and post the fastest route here.
+      </p>
+      <p>
+        What we already know: <a href="/characters/doll/">Doll</a> is a guaranteed character earned through the Great Shrine, not
+        the gacha, and the CBT had two gacha types. See the <a href="/guides/gacha/">gacha guide</a> for details.
+      </p>
+
+      <h2 id="faq">FAQ</h2>
+      <Faq items={faq} />
+    </article>
+  </div>
+</Base>

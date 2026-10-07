@@ -1,0 +1,255 @@
+---
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import Sources from '../components/Sources.astro';
+import YouTube from '../components/YouTube.astro';
+import { RELEASE, OFFICIAL, SRC, VIDEOS, LAST_UPDATED } from '../data/site';
+import { faqSchema, articleSchema, type QA } from '../lib/schema';
+
+const path = '/release-date-download/';
+const title = 'Astrae Oratio Release Date, Download (APK, iOS, PC) & Pre-Registration';
+const description =
+  'When does Astrae Oratio come out? Release window (2027 on iOS & Android, PC later), pre-registration status, download and APK safety, PC/emulator support, CBT dates and system requirements.';
+
+const faq: QA[] = [
+  {
+    q: 'What is the Astrae Oratio release date?',
+    a: 'There is no exact date. NC’s official window is 2027 for iOS and Android; the PC version follows after the mobile launch.',
+  },
+  {
+    q: 'Is Astrae Oratio out now?',
+    a: 'No. The only public test so far was a closed beta from October 2 to 6, 2026, limited to selected testers. It has ended.',
+  },
+  {
+    q: 'Can I download Astrae Oratio on Android or iOS?',
+    a: 'Not yet. There is no Google Play or App Store listing to install from. CBT testers received their download link by email, and that build no longer works.',
+  },
+  {
+    q: 'Is there an Astrae Oratio APK?',
+    a: 'There is no official public APK. Files labeled as Astrae Oratio APKs on third-party sites are not from NC and could contain malware. Wait for the official store pages.',
+  },
+  {
+    q: 'Is Astrae Oratio coming to PC or Steam?',
+    a: 'A PC version is confirmed for after the mobile launch. NC has not said which store or launcher it will use, and the CBT did not support emulators.',
+  },
+  {
+    q: 'Can I pre-register?',
+    a: 'Not yet. Pre-registration was not open as of October 7, 2026. Following the official X account (@Asora_EN) is the quickest way to hear when it opens.',
+  },
+  {
+    q: 'Will Astrae Oratio have English?',
+    a: 'Yes. The CBT supported English, Japanese, Korean and Traditional Chinese text, with Japanese voice acting.',
+  },
+  {
+    q: 'Will CBT progress carry over?',
+    a: 'No. All CBT data was deleted when the test ended and does not transfer to the official launch.',
+  },
+];
+
+const schema = [
+  articleSchema({ headline: title, description, path, published: new Date('2026-10-07'), modified: new Date(LAST_UPDATED) }),
+  faqSchema(faq),
+];
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Release date & download', href: path },
+];
+---
+
+<Base {title} {description} {path} {schema} breadcrumbs={crumbs} ogType="article">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Release · Download · PC</p>
+      <h1>Astrae Oratio Release Date &amp; Download</h1>
+      <p class="lede">
+        Everything about when and how you can play Astrae Oratio: the official release window, pre-registration, APK and PC
+        questions, and what the October 2026 closed beta required.
+      </p>
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </header>
+
+    <div class="with-aside">
+      <article class="prose">
+        <div class="callout ok">
+          <span class="callout-title">Short answer</span>
+          Astrae Oratio launches in <strong>2027 on iOS and Android</strong>, with <strong>PC after the mobile release</strong>. No
+          exact date, no pre-registration and no public download yet. The last test was a global CBT on
+          <strong>October 2–6, 2026</strong>.
+        </div>
+
+        <h2 id="release-date">Release date</h2>
+        <p>
+          NC and Dynamis One announced the release window on <strong>September 16, 2026</strong>, just before Tokyo Game Show:
+          the game is coming to <strong>iOS and Android in 2027</strong>. A specific day has not been announced.
+        </p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Platform</th><th>Release</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Android</td><td>2027</td><td><span class="status">Announced</span></td></tr>
+              <tr><td>iOS</td><td>2027</td><td><span class="status">Announced</span></td></tr>
+              <tr><td>PC</td><td>After the mobile launch</td><td><span class="status">Confirmed, no date</span></td></tr>
+              <tr><td>Consoles</td><td>—</td><td><span class="status no">Not announced</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The developers have said they are aiming for a <strong>simultaneous global launch</strong> — Korea, Japan, the US and
+          Europe at the same time — rather than a region-by-region rollout.
+        </p>
+
+        <h3 id="timeline">Timeline so far</h3>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Date</th><th>Milestone</th></tr></thead>
+            <tbody>
+              <tr><td>May 7, 2026</td><td>Official reveal and Super Teaser PV</td></tr>
+              <tr><td>Jun 23, 2026</td><td>Character Introduction PV</td></tr>
+              <tr><td>Aug 19 – Sep 21, 2026</td><td>CBT applications open</td></tr>
+              <tr><td>Sep 16, 2026</td><td>Release window announced: 2027 (mobile), PC later</td></tr>
+              <tr><td>Sep 17–21, 2026</td><td>First playable demo at Tokyo Game Show 2026</td></tr>
+              <tr><td>Oct 2–6, 2026</td><td>Global closed beta (iOS &amp; Android)</td></tr>
+              <tr><td>2027</td><td>Mobile launch</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Full details for each step are in the <a href="/news/">news &amp; update log</a>.</p>
+
+        <h2 id="pre-register">Pre-registration</h2>
+        <p>
+          <strong>Pre-registration is not open yet</strong> (as of {LAST_UPDATED}). Gacha games usually open it a few months before
+          launch, often with milestone rewards — when it happens, we will add the steps and rewards here.
+        </p>
+        <p>Until then, the reliable ways to get notified are the official channels:</p>
+        <ul>
+          <li><a href={OFFICIAL.socials[0].url} rel="noopener">Official X (English) — @Asora_EN</a></li>
+          <li><a href={OFFICIAL.socials[3].url} rel="noopener">Official YouTube (English) — @Asora_EN</a></li>
+          <li><a href={OFFICIAL.news} rel="noopener">Official website news page</a></li>
+        </ul>
+
+        <h2 id="download">Download &amp; APK</h2>
+        <p>
+          There is <strong>no public download</strong> of Astrae Oratio yet. The game has no live Google Play or App Store page,
+          and the only client released so far was the CBT build, which NC emailed to selected testers. That build stopped
+          working when the test ended on October 6, 2026.
+        </p>
+        <div class="callout warn">
+          <span class="callout-title">Be careful with “Astrae Oratio APK” sites</span>
+          Any APK offered on third-party sites is not an official release. Unofficial files can carry malware or steal
+          accounts, and NC’s CBT rules banned sharing or selling the client. When the game launches, download it only from
+          Google Play, the App Store or links on the official website.
+        </div>
+
+        <h2 id="pc">PC version &amp; emulators</h2>
+        <p>
+          A <strong>PC version is confirmed</strong> and will arrive <strong>after the mobile launch</strong>. NC has not announced
+          a date or a storefront (Steam, its own launcher or otherwise).
+        </p>
+        <p>
+          Emulators were not an option in the CBT: NC’s server notice stated that the test ran on mobile devices only and that
+          launching the game through an emulator was not supported. Whether that policy carries over to launch is unknown.
+        </p>
+
+        <h2 id="requirements">System requirements (CBT)</h2>
+        <p>These are the official specs for the in-development CBT build and may change for launch.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Spec</th><th>Android minimum</th><th>Android recommended</th><th>iOS minimum</th><th>iOS recommended</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Chip</td><td>Snapdragon 7 Gen 1</td><td>Snapdragon 8 Gen 2</td><td>A14</td><td>A16</td></tr>
+              <tr><td>RAM</td><td>6 GB</td><td>8 GB</td><td>4 GB</td><td>6 GB</td></tr>
+              <tr><td>OS</td><td>Android 12</td><td>Android 14</td><td>iOS 16.0</td><td>iOS 18.0</td></tr>
+              <tr><td>Storage</td><td colspan="4">At least 10 GB free</td></tr>
+              <tr><td>Connection</td><td colspan="4">Always online (Wi-Fi or mobile data)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          In practice, an iPhone 12 or newer meets the iOS minimum, and an iPhone 14 Pro or newer meets the recommended spec.
+          At Tokyo Game Show the developers said they were targeting phones up to five or six years old.
+        </p>
+
+        <h2 id="languages">Languages &amp; voice</h2>
+        <ul>
+          <li><strong>Text:</strong> {RELEASE.textLanguages.join(', ')}</li>
+          <li><strong>Voice:</strong> {RELEASE.voice} — the main story is fully voiced</li>
+        </ul>
+
+        <h2 id="cbt">The October 2026 closed beta</h2>
+        <p>
+          The global CBT ran from <strong>October 2, 2026, 12:00 to October 6, 2026, 12:00 (UTC+9)</strong> on Android and iOS.
+          Applications were open from August 19 to September 21, and testers were picked by lottery and notified by email on
+          September 23.
+        </p>
+        <ul>
+          <li>Testers had to be at least 16, and access was locked to the first device used.</li>
+          <li>In-app purchases were disabled and all data was wiped afterwards.</li>
+          <li>Content: the prologue, Minato and Shinjuku chapters, 18 playable characters, Score Trial, the Simulation Room, a raid and Free Time.</li>
+        </ul>
+        <p>
+          Read the <a href="/news/global-cbt-wrap-up-october-2026/">full CBT recap</a>, or see what we learned about
+          <a href="/guides/combat/">combat</a> and <a href="/guides/gacha/">gacha</a>.
+        </p>
+
+        <h2 id="trailer">Latest trailer</h2>
+        <YouTube id={VIDEOS.prologueDigest.id} title={VIDEOS.prologueDigest.title} />
+
+        <h2 id="faq">FAQ</h2>
+        <Faq items={faq} />
+
+        <Sources
+          items={[
+            SRC.gematsuRelease,
+            SRC.finalWeapon,
+            SRC.automatonPc,
+            SRC.invenBreakdown,
+            SRC.cbtRecruit,
+            SRC.cbtFaq,
+            SRC.cbtSchedule,
+            SRC.cbtServer,
+            SRC.dailianTgs,
+          ]}
+          updated={LAST_UPDATED}
+        />
+      </article>
+
+      <aside>
+        <div class="card">
+          <p class="kicker" style="margin-bottom:.8rem">At a glance</p>
+          <dl class="facts">
+            <dt>Mobile</dt>
+            <dd>2027</dd>
+            <dt>PC</dt>
+            <dd>After mobile</dd>
+            <dt>Pre-reg</dt>
+            <dd>Not open</dd>
+            <dt>Download</dt>
+            <dd>Not available</dd>
+            <dt>Last test</dt>
+            <dd>CBT, Oct 2–6, 2026</dd>
+            <dt>Price</dt>
+            <dd>Free-to-play (gacha)</dd>
+          </dl>
+        </div>
+        <nav class="card toc" aria-label="On this page" style="margin-top:1rem">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#release-date">Release date</a></li>
+            <li><a href="#pre-register">Pre-registration</a></li>
+            <li><a href="#download">Download &amp; APK</a></li>
+            <li><a href="#pc">PC &amp; emulators</a></li>
+            <li><a href="#requirements">System requirements</a></li>
+            <li><a href="#languages">Languages</a></li>
+            <li><a href="#cbt">Closed beta</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ol>
+        </nav>
+      </aside>
+    </div>
+  </div>
+</Base>

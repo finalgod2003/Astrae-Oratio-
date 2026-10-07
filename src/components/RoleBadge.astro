@@ -1,0 +1,56 @@
+---
+import { ROLES, type Role } from '../data/roles';
+
+interface Props {
+  role?: Role;
+  link?: boolean;
+}
+
+const { role, link = false } = Astro.props;
+const color = role ? ROLES[role].color : undefined;
+---
+
+{
+  role &&
+    (link ? (
+      <a class="role" href="/guides/combat/#roles" style={`--rc:${color}`} title={`CBT role: ${role}`}>
+        <span class="dot" aria-hidden="true" />
+        {role}
+      </a>
+    ) : (
+      <span class="role" style={`--rc:${color}`} title={`CBT role: ${role}`}>
+        <span class="dot" aria-hidden="true" />
+        {role}
+      </span>
+    ))
+}
+
+<style>
+  .role {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--rc);
+    background: color-mix(in srgb, var(--rc) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--rc) 40%, transparent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  a.role:hover {
+    color: var(--rc);
+    border-color: var(--rc);
+  }
+
+  .dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--rc);
+  }
+</style>

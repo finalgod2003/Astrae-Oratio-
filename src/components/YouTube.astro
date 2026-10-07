@@ -1,0 +1,100 @@
+---
+// Click-to-load YouTube embed: shows the thumbnail and only loads the player (youtube-nocookie) on click.
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<figure class="yt">
+  <button class="yt-btn" type="button" data-yt={id} data-title={title} aria-label={`Play video: ${title}`}>
+    <img
+      src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+      alt=""
+      width="480"
+      height="360"
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="yt-play" aria-hidden="true">
+      <svg viewBox="0 0 68 48"
+        ><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#e33"
+        ></path><path d="M45 24 27 14v20z" fill="#fff"></path></svg
+      >
+    </span>
+  </button>
+  <figcaption>{title} · <a href={`https://www.youtube.com/watch?v=${id}`} rel="noopener">Watch on YouTube</a></figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.yt-btn').forEach((btn) => {
+    btn.addEventListener(
+      'click',
+      () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.yt}?autoplay=1&rel=0`;
+        iframe.title = btn.dataset.title || 'YouTube video';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        btn.replaceWith(iframe);
+      },
+      { once: true },
+    );
+  });
+</script>
+
+<style>
+  .yt {
+    margin: 0 0 1.4em;
+  }
+
+  .yt-btn,
+  .yt :global(iframe) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #000;
+  }
+
+  .yt-btn {
+    position: relative;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .yt-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.88;
+    transition: opacity 0.2s ease;
+  }
+
+  .yt-btn:hover img {
+    opacity: 1;
+  }
+
+  .yt-play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .yt-play svg {
+    width: 68px;
+    height: 48px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+  }
+
+  figcaption {
+    margin-top: 0.45rem;
+    font-size: 0.86rem;
+    color: var(--text-faint);
+  }
+</style>

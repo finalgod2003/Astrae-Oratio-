@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import CharacterCard from '../components/CharacterCard.astro';
+import Sources from '../components/Sources.astro';
+import { getCharacters } from '../lib/characters';
+import { FACTIONS } from '../data/factions';
+import { SRC, LAST_UPDATED } from '../data/site';
+
+const characters = await getCharacters();
+const byId = new Map(characters.map((c) => [c.id, c]));
+
+const path = '/factions/';
+const title = 'Astrae Oratio Factions & Clans: Special District Office, Seiran Fellowship, Rose of Bunkyo and More';
+const description =
+  'Every Astrae Oratio clan and organization explained — the Special District Office, Minato Girls, Seiran Fellowship, Akina Urban Legend Research Institute, Rose of Bunkyo, Cafe Ichigo, YuLuKo Trio, Other Cabinet and more.';
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Factions', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">World · Organizations</p>
+      <h1>Astrae Oratio Factions &amp; Clans</h1>
+      <p class="lede">
+        Magical Tokyo is carved up into dominions that follow the city’s wards, so most magician groups are tied to a district.
+        Here is every clan and organization revealed so far, with members, home ward and Japanese names.
+      </p>
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </header>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Faction</th><th>Japanese</th><th>Type</th><th>Base</th><th>Members</th></tr>
+        </thead>
+        <tbody>
+          {
+            FACTIONS.map((f) => (
+              <tr>
+                <td><a href={`#${f.slug}`}>{f.name}</a></td>
+                <td lang="ja">{f.nameJa}</td>
+                <td>{f.kind}</td>
+                <td>{f.ward}</td>
+                <td>{f.members.length + (f.npcs?.length ?? 0)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    {
+      FACTIONS.map((f) => (
+        <section class="faction" aria-labelledby={f.slug} style={`--fc:${f.color}`}>
+          <div class="f-head">
+            <h2 id={f.slug}>{f.name}</h2>
+            <p class="f-meta">
+              {f.fullName && <span>{f.fullName} · </span>}
+              <span lang="ja">{f.nameJa}</span>
+              {f.nameZh && (
+                <span>
+                  {' '}
+                  · <span lang="zh-Hant">{f.nameZh}</span>
+                </span>
+              )}
+            </p>
+            <p class="f-pills">
+              <span class="pill">{f.kind}</span>
+              <span class="pill">Base: {f.ward}</span>
+              {f.storyArc && <span class="pill pill-gold">{f.storyArc}</span>}
+            </p>
+          </div>
+          <div class="prose f-body">
+            <p>
+              <strong>{f.summary}</strong>
+            </p>
+            {f.description.map((p) => (
+              <p>{p}</p>
+            ))}
+          </div>
+          {f.members.length > 0 && (
+            <div class="f-members">
+              {f.members
+                .map((m) => byId.get(m))
+                .filter((c) => !!c)
+                .map((c) => (
+                  <CharacterCard entry={c!} compact />
+                ))}
+            </div>
+          )}
+          {f.npcs && f.npcs.length > 0 && (
+            <div class="table-scroll npc">
+              <table>
+                <thead>
+                  <tr><th>Other named members</th><th>Japanese</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                  {f.npcs.map((n) => (
+                    <tr>
+                      <td>{n.name}</td>
+                      <td lang="ja">{n.nameJa ?? '—'}</td>
+                      <td>{n.note}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ))
+    }
+
+    <Sources items={[SRC.officialCharacters, SRC.officialWorld, SRC.gematsuRelease, SRC.invenBreakdown]} updated={LAST_UPDATED} />
+  </div>
+</Base>
+
+<style>
+  .faction {
+    padding: 2.4rem 0 0.6rem;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .f-head h2 {
+    margin: 0 0 0.3rem;
+    border-left: 4px solid var(--fc);
+    padding-left: 0.7rem;
+  }
+
+  .f-meta {
+    color: var(--text-faint);
+    font-size: 0.92rem;
+    margin: 0 0 0.6rem;
+  }
+
+  .f-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .f-body {
+    margin-top: 0.4rem;
+  }
+
+  .f-members {
+    display: grid;
+    gap: 0.8rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+    margin: 0.4rem 0 1.4rem;
+  }
+
+  .npc {
+    margin-top: 0.4rem;
+  }
+</style>

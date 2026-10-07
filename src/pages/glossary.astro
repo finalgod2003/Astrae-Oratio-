@@ -1,0 +1,176 @@
+---
+import Base from '../layouts/Base.astro';
+import Sources from '../components/Sources.astro';
+import { GLOSSARY } from '../data/glossary';
+import { SRC, LAST_UPDATED } from '../data/site';
+
+const path = '/glossary/';
+const title = 'Astrae Oratio Glossary: Terms, Systems & Items Explained (English / Japanese)';
+const description =
+  'A–Z glossary of Astrae Oratio terms with Japanese names: Shunin, Special District Office, Kleis, Artifact, Dominion, Trial of Domination, Dominion Skill, Vignettes, Starlight Films and every CBT item.';
+
+const basisLabel = { official: 'Official', cbt: 'CBT', media: 'Press' } as const;
+const count = GLOSSARY.reduce((n, g) => n + g.terms.length, 0);
+
+const schema = [
+  {
+    '@type': 'DefinedTermSet',
+    name: 'Astrae Oratio Glossary',
+    url: `https://astraeoratio.org${path}`,
+    hasDefinedTerm: GLOSSARY.flatMap((g) =>
+      g.terms.map((t) => ({
+        '@type': 'DefinedTerm',
+        name: t.term,
+        ...(t.ja ? { alternateName: t.ja } : {}),
+        description: t.def,
+      })),
+    ),
+  },
+];
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  {schema}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Glossary', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Reference</p>
+      <h1>Astrae Oratio Glossary</h1>
+      <p class="lede">
+        {count} terms from the lore, the cast and the CBT, with Japanese names where the official site gives them. Labels show
+        where each definition comes from: <span class="pill">Official</span> official site or notices,
+        <span class="pill">CBT</span> the October 2026 beta (may change), <span class="pill">Press</span> media coverage.
+      </p>
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </header>
+
+    <nav class="jump card" aria-label="Glossary sections">
+      {GLOSSARY.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
+    </nav>
+
+    {
+      GLOSSARY.map((g) => (
+        <section class="section" aria-labelledby={g.id}>
+          <h2 id={g.id}>{g.title}</h2>
+          <p class="sub">{g.intro}</p>
+          <dl class="terms">
+            {g.terms.map((t) => (
+              <div class="term" id={`term-${t.term.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}>
+                <dt>
+                  <span class="t-name">{t.term}</span>
+                  {t.ja && (
+                    <span class="t-ja" lang="ja">
+                      {t.ja}
+                    </span>
+                  )}
+                  <span class="pill t-basis">{basisLabel[t.basis]}</span>
+                </dt>
+                <dd>
+                  {t.aka && <p class="t-aka">Also: {t.aka}</p>}
+                  <p>
+                    {t.def}
+                    {t.link && (
+                      <>
+                        {' '}
+                        <a href={t.link}>More →</a>
+                      </>
+                    )}
+                  </p>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))
+    }
+
+    <Sources
+      items={[SRC.officialWorld, SRC.officialCharacters, SRC.cbtGuidebook, SRC.cbtRewards, SRC.cbtScenario, SRC.invenBreakdown]}
+      updated={LAST_UPDATED}
+    />
+  </div>
+</Base>
+
+<style>
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.8rem;
+  }
+
+  .jump a {
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: var(--text-dim);
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+  }
+
+  .jump a:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .sub {
+    color: var(--text-dim);
+  }
+
+  .terms {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0;
+  }
+
+  .term {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1.05rem;
+  }
+
+  .term dt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .t-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .t-ja {
+    color: var(--text-dim);
+  }
+
+  .t-basis {
+    margin-left: auto;
+  }
+
+  .term dd {
+    margin: 0;
+    color: var(--text-dim);
+  }
+
+  .term dd p {
+    margin: 0;
+  }
+
+  .t-aka {
+    font-size: 0.88rem;
+    color: var(--text-faint);
+    margin-bottom: 0.25rem !important;
+  }
+</style>

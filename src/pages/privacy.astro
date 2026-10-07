@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import { CONTACT_EMAIL, ANALYTICS } from '../data/site';
+
+const path = '/privacy/';
+const updated = '2026-10-07';
+---
+
+<Base
+  title="Privacy Policy | Astrae Oratio Wiki"
+  description="How Astrae Oratio Wiki (astraeoratio.org) handles data: analytics, cookies, embedded videos and your choices."
+  {path}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Privacy', href: path },
+  ]}
+>
+  <div class="wrap">
+    <article class="prose">
+      <header class="page-head">
+        <p class="kicker">Legal</p>
+        <h1>Privacy Policy</h1>
+        <p class="meta-line">Effective <time datetime={updated}>{updated}</time></p>
+      </header>
+
+      <p>
+        Astrae Oratio Wiki (“we”, astraeoratio.org) is a static, read-only fan site. There are no user accounts, comments or
+        forms, and we never ask you for personal information. This page explains the limited data that is processed when you
+        visit.
+      </p>
+
+      <h2 id="analytics">Analytics</h2>
+      <p>We use analytics to understand which pages are useful and to improve the site:</p>
+      <ul>
+        <li>
+          <strong>Plausible Analytics</strong> — privacy-friendly analytics that uses no cookies and stores no personal data. It
+          records aggregate information such as page views, referring sites, country, device type and clicks on outbound
+          links. The script is served from our own domain; events are processed by Plausible Insights OÜ in the EU.
+        </li>
+        <li>
+          <strong>Google Analytics 4</strong>{ANALYTICS.ga4Id ? '' : ' (when enabled)'} — sets first-party cookies (such as
+          <code>_ga</code>) to measure visits and engagement. Google processes this data under its own
+          <a href="https://policies.google.com/privacy" rel="noopener">privacy policy</a>. You can opt out with the
+          <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener">Google Analytics opt-out add-on</a> or by blocking
+          cookies in your browser.
+        </li>
+      </ul>
+
+      <h2 id="embeds">Embedded videos</h2>
+      <p>
+        Official trailers are shown as a thumbnail image first. The YouTube player — served from youtube-nocookie.com — only
+        loads after you click play. Loading the thumbnail contacts YouTube’s image servers (i.ytimg.com).
+      </p>
+
+      <h2 id="preferences">Local preferences</h2>
+      <p>
+        If you switch between light and dark mode, your choice is saved in your browser’s local storage on your device. It is
+        never sent to us.
+      </p>
+
+      <h2 id="hosting">Hosting and logs</h2>
+      <p>
+        Our hosting provider may keep standard server logs (such as IP address, browser type and the page requested) for
+        security and reliability. We don’t use them to identify visitors.
+      </p>
+
+      <h2 id="links">Links to other sites</h2>
+      <p>
+        We link to the official Astrae Oratio website, NC services, YouTube, X and press sites. Their privacy practices are their
+        own.
+      </p>
+
+      <h2 id="contact">Contact</h2>
+      <p>Questions about this policy: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+    </article>
+  </div>
+</Base>

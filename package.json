@@ -1,0 +1,24 @@
+{
+  "name": "astraeoratio-wiki",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unofficial Astrae Oratio wiki & guide site (astraeoratio.org)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:links": "node scripts/check-links.mjs",
+    "assets": "node scripts/make-assets.mjs"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "^0.4.3",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "astro": "^7.3.6"
+  }
+}

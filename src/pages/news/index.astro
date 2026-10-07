@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { fmtDate, isoDate } from '../../lib/schema';
+import { OFFICIAL, LAST_UPDATED } from '../../data/site';
+
+const news = (await getCollection('news')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const path = '/news/';
+const title = 'Astrae Oratio News & Update Log: CBT, Release Date, Trailers';
+const description =
+  'Every Astrae Oratio announcement in one timeline: official reveal, trailers, CBT sign-ups and results, Tokyo Game Show 2026 and the 2027 release window. Summarized with links to official sources.';
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'News', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">News · Update log</p>
+      <h1>Astrae Oratio News</h1>
+      <p class="lede">
+        A dated log of official announcements, written up with the details that matter and links to the original notices.
+        Subscribe via <a href="/rss.xml">RSS</a>, or check the <a href={OFFICIAL.news} rel="noopener">official news page</a>.
+      </p>
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </header>
+
+    <ol class="timeline">
+      {
+        news.map((n) => (
+          <li>
+            <time datetime={isoDate(n.data.date)}>{fmtDate(n.data.date)}</time>
+            <div class="t-body">
+              <h2>
+                <a href={`/news/${n.id}/`}>{n.data.title}</a>
+              </h2>
+              <p>{n.data.description}</p>
+              <p class="t-tags">
+                {n.data.tags.map((t) => (
+                  <span class="pill">{t}</span>
+                ))}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</Base>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.2rem;
+    border-left: 2px solid var(--line);
+  }
+
+  .timeline li {
+    position: relative;
+    margin: 0 0 1.8rem;
+    padding-left: 1rem;
+  }
+
+  .timeline li::before {
+    content: '';
+    position: absolute;
+    left: calc(-1.2rem - 7px);
+    top: 0.35rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+
+  .timeline time {
+    font-size: 0.86rem;
+    color: var(--text-faint);
+    font-weight: 600;
+  }
+
+  .timeline h2 {
+    font-size: 1.45rem;
+    margin: 0.15rem 0 0.35rem;
+  }
+
+  .timeline h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .timeline h2 a:hover {
+    color: var(--gold);
+  }
+
+  .t-body p {
+    color: var(--text-dim);
+    margin-bottom: 0.4rem;
+    max-width: var(--measure);
+  }
+
+  .t-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+</style>

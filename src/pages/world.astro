@@ -1,0 +1,198 @@
+---
+import Base from '../layouts/Base.astro';
+import Sources from '../components/Sources.astro';
+import YouTube from '../components/YouTube.astro';
+import { SRC, VIDEOS, LAST_UPDATED } from '../data/site';
+import { articleSchema } from '../lib/schema';
+
+const path = '/world/';
+const title = 'Astrae Oratio World & Lore Explained: Tokyo ’89, Magic, Kleis, Artifacts and Dominions';
+const description =
+  'The world of Astrae Oratio explained: Tokyo ’89 (1889, a century ahead of history), what magic is, Hecate, the Kleis and Artifacts, dominions, Trials of Domination, the Eras of magic and the Special District Office.';
+const schema = [articleSchema({ headline: title, description, path, published: new Date('2026-10-07'), modified: new Date(LAST_UPDATED) })];
+
+const toc = [
+  ['synopsis', 'Synopsis'],
+  ['tokyo-89', 'Tokyo ’89: 1889 or 1989?'],
+  ['magic', 'What magic is'],
+  ['magicians', 'Magicians'],
+  ['hecate', 'Hecate, the first magician'],
+  ['kleis', 'Kleis (ignition key)'],
+  ['artifact', 'Artifacts'],
+  ['dominion', 'Dominions'],
+  ['trial', 'Trial of Domination'],
+  ['eras', 'The Eras of magic'],
+  ['tower', 'The Tower'],
+  ['sdo', 'The Special District Office'],
+];
+---
+
+<Base
+  {title}
+  {description}
+  {path}
+  {schema}
+  ogType="article"
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'World & lore', href: path },
+  ]}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">World · Lore</p>
+      <h1>The World of Astrae Oratio</h1>
+      <p class="lede">
+        Retro, magic, administration, adventure, Shindenki: the official site’s own tagline sums up the mix. This guide walks
+        through the setting and the key lore concepts, in plain language, with links to the characters and systems they touch.
+      </p>
+      <p class="meta-line">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </header>
+
+    <div class="with-aside">
+      <article class="prose">
+        <h2 id="synopsis">Synopsis</h2>
+        <p>
+          In a Tokyo that feels familiar but isn’t quite ours, Tokyo Tower has only just been finished and the international
+          exhibition center in Odaiba is still a building site. The <a href="/characters/shunin/">Shunin</a>, a low-ranking local
+          civil servant, is abruptly reassigned to an agency nobody has heard of: the
+          <a href="/factions/#special-district-office">Special District Office</a>.
+        </p>
+        <p>
+          The office turns out to run the administrative affairs of every magician living secretly in Tokyo — and the Shunin is
+          now the one official responsible for all of them. Any incident involving the city’s magicians is his to handle, alone.
+        </p>
+
+        <h2 id="tokyo-89">Tokyo ’89: 1889 or 1989?</h2>
+        <p>
+          The setting is marketed as <strong>Tokyo ’89</strong>, which causes some confusion. The official answer is
+          <strong>1889</strong> — but in a world where technology, culture and civilization have raced roughly a
+          <strong>hundred years ahead</strong> of real history. The result looks and feels like late-1980s Japan at the height of
+          its postwar boom — some Japanese coverage simply calls the look “Heisei retro” and lists the year as 1989.
+        </p>
+        <ul>
+          <li>Tokyo beat its rival <strong>Kyoto</strong> to host the World Expo after Paris, so Odaiba is being reclaimed at full speed.</li>
+          <li><strong>Tokyo Tower</strong> is due to be completed this year.</li>
+          <li>The city is seen as the most youthful and energetic in the world.</li>
+          <li>In-universe, the year is <strong>Reisei 9</strong> (令成9年), using the game’s fictional era name.</li>
+        </ul>
+        <p>
+          The real 1889 is a deliberate choice: it is the year of the Paris Exposition and the Eiffel Tower, and the year
+          Nietzsche collapsed in Turin — both of which the lore folds into its history of magic (see <a href="#tower">The Tower</a>).
+        </p>
+
+        <h2 id="magic">What magic is</h2>
+        <p>
+          In Astrae Oratio, <strong>magic is human dreams</strong>. Throughout history, people who wanted something from the world —
+          a wish, a prayer, a hope, even a fear — looked up and spoke it to the stars, knowing it might never come true. Those
+          dreams, the lore says, became the stars themselves. The game’s title echoes the idea: <em>astra</em> (stars) and
+          <em>oratio</em> (speech, prayer).
+        </p>
+
+        <h2 id="magicians">Magicians</h2>
+        <p>
+          A <strong>magician</strong> is someone who takes the wishes people placed in the stars and makes them real with their own
+          hands. The defining trait of modern magic is that it <strong>reflects the way of life of the land the magician lives
+          in</strong> — which is why a Minato middle schooler, a Shinjuku urban-legend hunter and a Bunkyo vigilante all cast very
+          differently. Magicians generally hide what they are from ordinary people.
+        </p>
+
+        <h2 id="hecate">Hecate, the first magician</h2>
+        <p>
+          The goddess <strong>Hecate</strong> is revered as the first magician. A goddess of sorcery, the moon and the night,
+          crossroads and boundaries, she governs every passage between worlds: day and night, life and death, the surface and the
+          hidden side, city and nature, reality and unreality.
+        </p>
+        <p>
+          She is usually depicted with a <strong>torch</strong> and a <strong>dagger</strong>. The torch marks the line between
+          reality and unreality — the key into magic. The dagger is the magician’s will, which makes magic manifest. Myths have
+          faded since, but those two ideas survive as the Kleis and the Artifact.
+        </p>
+
+        <h2 id="kleis">Kleis (ignition key)</h2>
+        <p>
+          <strong>Kleis</strong> (κλείς) is ancient Greek for “key”. It is Hecate’s torch in modern form: the basic tool every
+          magician needs to cross into the hidden side of reality, where magic works. Magicians call it the
+          <strong>ignition key</strong> — like starting a car, you turn it to switch into magic. Since every magician owns one, a
+          Kleis also serves as proof that someone is a magician.
+        </p>
+
+        <h2 id="artifact">Artifacts</h2>
+        <p>
+          <strong>Artifacts</strong> are Hecate’s dagger: magic weapons through which a magician’s will takes form. They come in
+          every shape, from antiques with centuries of history to modern inventions. Once a magician has entered the hidden side
+          with their Kleis, an Artifact lets them use far stronger magic than usual. The developers have also named
+          <a href="/guides/combat/#artifact-liberation">Artifact Liberation</a> as a combat mechanic.
+        </p>
+
+        <h2 id="dominion">Dominions</h2>
+        <p>
+          Because magic mirrors the life of the land, a magician’s territory — their <strong>dominion</strong> — is the foundation of
+          their power. Since the Fifth Era, magicians have borrowed <strong>administration</strong> as their framework for
+          understanding the world, systematizing the administrative structure of the places they belong to.
+        </p>
+        <p>
+          In modern Tokyo that means the <strong>23 special wards and other districts double as magician dominions</strong>: Minato,
+          Shinjuku, Shibuya, Shinagawa, Sumida and so on. Conflicts between magicians therefore play out as
+          <strong>administrative disputes</strong> — and mediating them is the Shunin’s job. In battle, this idea becomes the
+          <a href="/guides/combat/#dominion-skill">Dominion Skill</a>.
+        </p>
+
+        <h2 id="trial">Trial of Domination</h2>
+        <p>
+          When magicians clash, they settle it with a <strong>Trial of Domination</strong> — a trial by duel. It has been the main way
+          of resolving disputes, and effectively the magicians’ justice system, since the Fourth Era.
+        </p>
+
+        <h2 id="eras">The Eras of magic</h2>
+        <p>
+          Magic history is divided into numbered <strong>Eras</strong>. Two endings are known: the <strong>Second Era</strong>
+          ended when the magician-king of Babylon, who built a tower to become a god, fell back to earth; the
+          <strong>Fifth Era</strong> ends in <strong>Reisei 9</strong> — the year the story starts — echoing the philosopher in Turin
+          who declared that God is dead and lost his mind. The game begins at the hinge between two eras.
+        </p>
+
+        <h2 id="tower">The Tower</h2>
+        <p>
+          Between the Tower of Babel and the Eiffel Tower — between “I will become a god” and “God is dead” — the
+          <strong>tower</strong> keeps returning as a symbol of humanity reaching for the stars instead of merely wishing on them.
+          As the Fifth Era closes, a new tower is nearing completion in Tokyo, as if announcing the next paradigm of magic. That
+          tower is Tokyo Tower, and the Special District Office sits right beneath it.
+        </p>
+
+        <h2 id="sdo">The Special District Office</h2>
+        <p>
+          Officially the <strong>Other Decree Special District Office</strong> (裏令指定特例区域管理庁), the
+          <a href="/factions/#special-district-office">Special District Office</a> administers the special district designated by
+          the <a href="/factions/#other-cabinet">Other Cabinet</a> — the hidden power that really runs magical Tokyo. That gives it
+          authority over every magical matter in the city. People call it the magicians’ Tokyo Metropolitan Government, but at
+          the moment its staff is exactly one person: the Shunin.
+        </p>
+
+        <YouTube id={VIDEOS.prologueAnimation.id} title={VIDEOS.prologueAnimation.title} />
+
+        <p>
+          Continue with the <a href="/factions/">factions guide</a>, the <a href="/glossary/">glossary</a> or the
+          <a href="/characters/">character list</a>.
+        </p>
+
+        <Sources items={[SRC.officialWorld, SRC.invenBreakdown, SRC.gematsuRelease]} updated={LAST_UPDATED} />
+      </article>
+
+      <aside>
+        <nav class="card toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <ol>
+            {
+              toc.map(([id, label]) => (
+                <li>
+                  <a href={`#${id}`}>{label}</a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+      </aside>
+    </div>
+  </div>
+</Base>

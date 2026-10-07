@@ -1,0 +1,23 @@
+---
+// Renders an FAQ list. Answers are HTML strings (trusted, written by us).
+// Use `faqSchema()` from src/lib/schema.ts to emit matching FAQPage JSON-LD.
+import type { QA } from '../lib/schema';
+
+interface Props {
+  items: QA[];
+  open?: number;
+}
+
+const { items, open = -1 } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((item, i) => (
+      <details open={i === open}>
+        <summary>{item.q}</summary>
+        <div class="faq-a" set:html={item.a} />
+      </details>
+    ))
+  }
+</div>

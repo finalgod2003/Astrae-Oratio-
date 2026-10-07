@@ -1,0 +1,111 @@
+---
+import { LAST_UPDATED, OFFICIAL } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <p class="foot-brand">Astrae Oratio Wiki</p>
+        <p class="foot-note">
+          An <strong>unofficial</strong> fan-made wiki and guide. Not affiliated with, endorsed by or sponsored by NC
+          Corporation or Dynamis One. For official information, visit the
+          <a href={OFFICIAL.site} rel="noopener">official Astrae Oratio website</a>.
+        </p>
+        <p class="foot-note">
+          Astrae Oratio and all related names are trademarks or copyrights of Dynamis One, licensed to NC Corporation.
+        </p>
+      </div>
+      <nav aria-label="Guides">
+        <p class="foot-h">Wiki</p>
+        <a href="/release-date-download/">Release date &amp; download</a>
+        <a href="/characters/">Characters</a>
+        <a href="/factions/">Factions &amp; clans</a>
+        <a href="/world/">World &amp; lore</a>
+        <a href="/glossary/">Glossary</a>
+      </nav>
+      <nav aria-label="Guides and news">
+        <p class="foot-h">Guides</p>
+        <a href="/guides/combat/">Combat system</a>
+        <a href="/guides/gacha/">Gacha</a>
+        <a href="/guides/progression/">Progression</a>
+        <a href="/tier-list/">Tier list</a>
+        <a href="/codes/">Codes</a>
+        <a href="/news/">News</a>
+      </nav>
+      <nav aria-label="About">
+        <p class="foot-h">Site</p>
+        <a href="/about/">About &amp; sources</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/rss.xml">RSS feed</a>
+      </nav>
+    </div>
+    <p class="foot-small">Last content review: <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line-soft);
+    background: var(--bg-2);
+    padding: 2.6rem 0 2rem;
+    font-size: 0.92rem;
+    color: var(--text-dim);
+  }
+
+  .foot-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  }
+
+  .foot-grid > div {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 900px) {
+    .foot-grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+    }
+
+    .foot-grid > div {
+      grid-column: auto;
+    }
+  }
+
+  .foot-brand {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  .foot-note {
+    margin: 0 0 0.7rem;
+    max-width: 34rem;
+  }
+
+  .foot-h {
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  nav a {
+    display: block;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 0.18rem 0;
+  }
+
+  nav a:hover {
+    color: var(--gold);
+  }
+
+  .foot-small {
+    margin: 2rem 0 0;
+    font-size: 0.82rem;
+    color: var(--text-faint);
+  }
+</style>

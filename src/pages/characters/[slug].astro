@@ -1,0 +1,314 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Sigil from '../../components/Sigil.astro';
+import RoleBadge from '../../components/RoleBadge.astro';
+import CharacterCard from '../../components/CharacterCard.astro';
+import Sources from '../../components/Sources.astro';
+import YouTube from '../../components/YouTube.astro';
+import { getCharacters, officialProfileUrl, type Character } from '../../lib/characters';
+import { factionBySlug } from '../../data/factions';
+import { ROLES } from '../../data/roles';
+import { articleSchema, isoDate } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const all = await getCharacters();
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+
+interface Props {
+  entry: Character;
+  all: Character[];
+}
+
+const { entry, all } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const faction = factionBySlug(d.faction);
+const color = faction?.color ?? '#7d88a6';
+const clanmates = all.filter((c) => c.data.faction === d.faction && c.id !== entry.id);
+const sameRole = d.role ? all.filter((c) => c.data.role === d.role && c.id !== entry.id && c.data.faction !== d.faction) : [];
+const official = officialProfileUrl(d.officialKey);
+
+const path = `/characters/${entry.id}/`;
+const title =
+  d.status === 'cbt'
+    ? `${d.name} — Astrae Oratio CBT Character (${d.role ?? 'Role TBA'})`
+    : d.cv
+      ? `${d.name} (${d.nameJa ?? ''}) — Astrae Oratio Profile, Role & Voice Actor`.replace(' ()', '')
+      : `${d.name} (${d.nameJa ?? ''}) — Astrae Oratio Character Profile`.replace(' ()', '');
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Characters', href: '/characters/' },
+  { name: d.name, href: path },
+];
+
+const schema = [
+  articleSchema({ headline: `${d.name} — Astrae Oratio`, description: d.summary, path, published: d.updated, modified: d.updated }),
+];
+---
+
+<Base {title} description={d.summary} {path} {schema} breadcrumbs={crumbs} ogType="article" modified={d.updated}>
+  <div class="wrap">
+    <header class="char-hero" style={`--c:${color}`}>
+      <div class="char-art" aria-hidden="true">
+        <Sigil seed={entry.id} color={color} size={190} />
+        {d.nameJa && <span class="char-jp" lang="ja">{d.nameJa}</span>}
+      </div>
+      <div class="char-head">
+        <p class="kicker">
+          <a href={`/factions/#${d.faction}`}>{faction?.name ?? 'Unknown clan'}</a>
+        </p>
+        <h1>{d.name}</h1>
+        {d.nameJa && <p class="char-ja" lang="ja">{d.nameJa}</p>}
+        <div class="char-tags">
+          {d.role && <RoleBadge role={d.role} link />}
+          {d.cbtPlayable ? <span class="pill pill-gold">Playable in CBT</span> : <span class="pill">Not playable in CBT</span>}
+          {d.status === 'cbt' && <span class="pill">No official profile yet</span>}
+        </div>
+        {
+          d.cv && (
+            <p class="char-sum">
+              Voiced by <strong>{d.cv}</strong> <span lang="ja">({d.cvJa})</span>
+            </p>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="with-aside">
+      <article class="prose">
+        {d.pv && <YouTube id={d.pv} title={`${d.name} — official PV`} />}
+        {
+          d.status === 'cbt' && (
+            <div class="callout cbt">
+              <span class="callout-title">CBT-only information</span>
+              Everything on this page comes from the October 2026 closed beta. Names, roles and kits can change before launch.
+            </div>
+          )
+        }
+        <Content />
+
+        {
+          d.role && (
+            <section aria-labelledby="role-h">
+              <h2 id="role-h">About the {d.role} role</h2>
+              <p>
+                {ROLES[d.role].reads} <em>(Our reading of the CBT label — official definitions are pending.)</em>{' '}
+                {sameRole.length > 0 && (
+                  <>
+                    Other {d.role}s in the CBT:{' '}
+                    {sameRole.map((c, i) => (
+                      <>
+                        <a href={`/characters/${c.id}/`}>{c.data.name}</a>
+                        {i < sameRole.length - 1 ? ', ' : '.'}
+                      </>
+                    ))}
+                  </>
+                )}
+              </p>
+            </section>
+          )
+        }
+
+        <Sources items={d.sources} updated={d.updated} />
+      </article>
+
+      <aside>
+        <div class="card infobox" style={`--c:${color}`}>
+          <p class="info-title">Profile</p>
+          <dl class="facts">
+            <dt>Name</dt>
+            <dd>{d.name}</dd>
+            {
+              d.nameJa && (
+                <>
+                  <dt>Japanese</dt>
+                  <dd lang="ja">{d.nameJa}</dd>
+                </>
+              )
+            }
+            {
+              d.nameZh && (
+                <>
+                  <dt>Chinese</dt>
+                  <dd lang="zh-Hant">{d.nameZh}</dd>
+                </>
+              )
+            }
+            {
+              d.nameKo && (
+                <>
+                  <dt>Korean</dt>
+                  <dd lang="ko">{d.nameKo}</dd>
+                </>
+              )
+            }
+            <dt>Clan</dt>
+            <dd><a href={`/factions/#${d.faction}`}>{faction?.name ?? '—'}</a></dd>
+            {
+              faction && faction.ward !== '—' && (
+                <>
+                  <dt>Base</dt>
+                  <dd>{faction.ward}</dd>
+                </>
+              )
+            }
+            {
+              d.occupation && (
+                <>
+                  <dt>Occupation</dt>
+                  <dd>{d.occupation}</dd>
+                </>
+              )
+            }
+            {
+              d.magic && (
+                <>
+                  <dt>Magic</dt>
+                  <dd>{d.magic}</dd>
+                </>
+              )
+            }
+            <dt>Voice (JP)</dt>
+            <dd>
+              {d.cv ? (
+                <>
+                  {d.cv}
+                  <br />
+                  <span lang="ja" class="dim">{d.cvJa}</span>
+                </>
+              ) : (
+                <span class="dim">Not announced</span>
+              )}
+            </dd>
+            <dt>CBT role</dt>
+            <dd>{d.role ? <RoleBadge role={d.role} link /> : <span class="dim">—</span>}</dd>
+          </dl>
+          {
+            official && (
+              <p class="info-link">
+                <a href={official} rel="noopener">Official profile ↗</a>
+              </p>
+            )
+          }
+          <p class="meta-line">Updated <time datetime={isoDate(d.updated)}>{isoDate(d.updated)}</time></p>
+        </div>
+
+        {
+          clanmates.length > 0 && (
+            <div class="mates">
+              <p class="info-title">Also in {faction?.name}</p>
+              <div class="mates-grid">
+                {clanmates.map((c) => (
+                  <CharacterCard entry={c} compact />
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .char-hero {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.6rem 0 2rem;
+  }
+
+  @media (min-width: 760px) {
+    .char-hero {
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 2.2rem;
+    }
+  }
+
+  .char-art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    max-width: 260px;
+    width: 100%;
+    border-radius: 20px;
+    border: 1px solid color-mix(in srgb, var(--c) 40%, var(--line));
+    background:
+      radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--c) 26%, transparent), transparent 66%),
+      linear-gradient(160deg, color-mix(in srgb, var(--c) 12%, var(--surface-2)), var(--surface));
+  }
+
+  .char-jp {
+    position: absolute;
+    right: 0.8rem;
+    top: 0.8rem;
+    writing-mode: vertical-rl;
+    letter-spacing: 0.16em;
+    font-size: 1.05rem;
+    color: color-mix(in srgb, var(--c) 70%, var(--text));
+  }
+
+  .char-head h1 {
+    margin-bottom: 0.15rem;
+  }
+
+  .char-head .kicker a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .char-ja {
+    color: var(--text-dim);
+    font-size: 1.15rem;
+    margin: 0 0 0.7rem;
+  }
+
+  .char-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .char-sum {
+    color: var(--text-dim);
+    max-width: 44rem;
+    margin: 0;
+  }
+
+  .infobox {
+    border-top: 4px solid var(--c);
+  }
+
+  .info-title {
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 0 0 0.8rem;
+  }
+
+  .info-link {
+    margin: 1rem 0 0.4rem;
+    font-size: 0.92rem;
+  }
+
+  .dim {
+    color: var(--text-faint);
+  }
+
+  .mates {
+    margin-top: 1.2rem;
+  }
+
+  .mates-grid {
+    display: grid;
+    gap: 0.7rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Sources from '../../components/Sources.astro';
+import YouTube from '../../components/YouTube.astro';
+import { articleSchema, fmtDate, isoDate } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const news = (await getCollection('news')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return news.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, newer: news[i - 1], older: news[i + 1] },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'news'>;
+  newer?: CollectionEntry<'news'>;
+  older?: CollectionEntry<'news'>;
+}
+
+const { entry, newer, older } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const path = `/news/${entry.id}/`;
+const schema = [
+  articleSchema({ type: 'NewsArticle', headline: d.title, description: d.description, path, published: d.date, modified: d.updated }),
+];
+---
+
+<Base
+  title={`${d.title} | Astrae Oratio Wiki`}
+  description={d.description}
+  {path}
+  {schema}
+  ogType="article"
+  published={d.date}
+  modified={d.updated ?? d.date}
+  breadcrumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'News', href: '/news/' },
+    { name: d.title, href: path },
+  ]}
+>
+  <div class="wrap">
+    <article class="prose news-article">
+      <header class="page-head">
+        <p class="kicker">{d.tags.join(' · ') || 'News'}</p>
+        <h1>{d.title}</h1>
+        <p class="meta-line">
+          Published <time datetime={isoDate(d.date)}>{fmtDate(d.date)}</time>
+          {
+            d.updated && (
+              <>
+                {' '}
+                · Updated <time datetime={isoDate(d.updated)}>{fmtDate(d.updated)}</time>
+              </>
+            )
+          }
+        </p>
+      </header>
+      {d.video && <YouTube id={d.video} title={d.title} />}
+      <Content />
+      <Sources items={d.sources} />
+      <nav class="pager" aria-label="More news">
+        {newer ? <a href={`/news/${newer.id}/`}>← Newer: {newer.data.title}</a> : <span />}
+        {older && <a href={`/news/${older.id}/`}>Older: {older.data.title} →</a>}
+      </nav>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .news-article {
+    margin-inline: auto;
+  }
+
+  .news-article h1 {
+    font-size: clamp(2rem, 4.6vw, 3rem);
+  }
+
+  .pager {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 2.4rem;
+    font-size: 0.95rem;
+  }
+
+  @media (min-width: 700px) {
+    .pager {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .pager a:last-child {
+      text-align: right;
+    }
+  }
+</style>

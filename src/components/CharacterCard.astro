@@ -1,0 +1,133 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Sigil from './Sigil.astro';
+import RoleBadge from './RoleBadge.astro';
+import { factionBySlug } from '../data/factions';
+
+interface Props {
+  entry: CollectionEntry<'characters'>;
+  compact?: boolean;
+}
+
+const { entry, compact = false } = Astro.props;
+const d = entry.data;
+const faction = factionBySlug(d.faction);
+const color = faction?.color ?? '#7d88a6';
+---
+
+<a class:list={['ccard', { compact }]} href={`/characters/${entry.id}/`} style={`--c:${color}`}>
+  <div class="ccard-art">
+    <Sigil seed={entry.id} color={color} size={compact ? 64 : 92} />
+    {d.nameJa && <span class="ccard-jp" lang="ja">{d.nameJa}</span>}
+    {d.status === 'cbt' && <span class="ccard-flag">CBT</span>}
+  </div>
+  <div class="ccard-body">
+    <span class="ccard-name">{d.name}</span>
+    <span class="ccard-meta">{faction?.name ?? 'Unknown clan'}</span>
+    {
+      (d.role || d.cv) && (
+        <span class="ccard-tags">
+          <RoleBadge role={d.role} />
+          {d.cv && !compact && <span class="ccard-cv">CV {d.cv}</span>}
+        </span>
+      )
+    }
+  </div>
+</a>
+
+<style>
+  .ccard {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.16s ease, border-color 0.16s ease;
+  }
+
+  .ccard:hover {
+    color: var(--text);
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--c) 70%, var(--line));
+  }
+
+  .ccard-art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    background:
+      radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--c) 24%, transparent), transparent 65%),
+      linear-gradient(180deg, color-mix(in srgb, var(--c) 10%, var(--surface-2)), var(--surface));
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .ccard-jp {
+    position: absolute;
+    right: 0.55rem;
+    top: 0.5rem;
+    writing-mode: vertical-rl;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--c) 75%, var(--text));
+    opacity: 0.9;
+    max-height: calc(100% - 1rem);
+    overflow: hidden;
+  }
+
+  .ccard-flag {
+    position: absolute;
+    left: 0.55rem;
+    top: 0.55rem;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 0.05rem 0.4rem;
+    border-radius: 4px;
+    color: #6fa8ff;
+    border: 1px solid color-mix(in srgb, #6fa8ff 50%, transparent);
+  }
+
+  .ccard-body {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.8rem 0.9rem 0.95rem;
+  }
+
+  .ccard-name {
+    font-family: var(--font-display);
+    font-size: 1.28rem;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .ccard-meta {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+    line-height: 1.35;
+  }
+
+  .ccard-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+    margin-top: 0.2rem;
+  }
+
+  .ccard-cv {
+    font-size: 0.76rem;
+    color: var(--text-dim);
+  }
+
+  .compact .ccard-art {
+    aspect-ratio: 16 / 9;
+  }
+
+  .compact .ccard-name {
+    font-size: 1.1rem;
+  }
+</style>
