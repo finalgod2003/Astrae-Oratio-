@@ -52,6 +52,15 @@ npm run assets       # 重新生成 favicon / OG 分享图（public/）
   - 如果托管支持反向代理（Vercel / Cloudflare Pages），改成 `/api/event` 可绕过大部分广告拦截。
   - Plausible 后台要先添加站点 `astraeoratio.org`，否则事件会被丢弃。
 
+## 部署（Vercel，推荐）
+
+1. Vercel → Add New → Project → 导入 GitHub 仓库 `finalgod2003/Astrae-Oratio-`，框架自动识别为 Astro（配置见 `vercel.json`），直接 Deploy。之后每次 push 到 `main` 自动上线。
+2. Project → Settings → Domains：添加 `astraeoratio.org` 和 `www.astraeoratio.org`（www 设为 308 跳转到根域名）。
+3. Namecheap → Domain List → Manage → Advanced DNS：删除停放页记录（`parkingpage.namecheap.com` 的 CNAME、URL Redirect 记录），添加（以 Vercel 域名页显示的值为准）：
+   - `A` 记录，Host `@`，Value `76.76.21.21`
+   - `CNAME` 记录，Host `www`，Value `cname.vercel-dns.com`
+4. 上线后把 `src/data/site.ts` 里的 `plausibleApi` 改成 `/api/event`（`vercel.json` 已配好到 plausible.io 的代理）。
+
 ## 版权与官方素材
 
 - 本站为非官方粉丝站，页脚与 About 页均有声明。
