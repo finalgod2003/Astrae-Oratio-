@@ -87,13 +87,19 @@ const jsonLd = graph.length ? JSON.stringify({ '@context': 'https://schema.org',
     {ANALYTICS.gscVerification && <meta name="google-site-verification" content={ANALYTICS.gscVerification} />}
 
     {
-      ANALYTICS.plausibleDomain && (
+      ANALYTICS.plausibleScriptId ? (
+        <>
+          <script is:inline async src={`${ANALYTICS.plausibleHost}/js/${ANALYTICS.plausibleScriptId}.js`} />
+          <script is:inline>
+            window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()
+          </script>
+        </>
+      ) : (
         <script
           is:inline
           defer
           data-domain={ANALYTICS.plausibleDomain}
-          data-api={ANALYTICS.plausibleApi}
-          src={ANALYTICS.plausibleScript}
+          src={`${ANALYTICS.plausibleHost}/js/script.outbound-links.js`}
         />
       )
     }

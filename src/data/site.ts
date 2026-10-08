@@ -11,16 +11,16 @@ export const CONTACT_EMAIL = 'contact@astraeoratio.org';
  * Analytics & verification. Empty values switch the tag off.
  * - ga4Id: GA4 measurement ID ("G-XXXXXXXXXX").
  * - gscVerification: the `content` value of Search Console's HTML-tag verification.
- * - Plausible is fully first-party: the script is a self-hosted copy (public/js/p.js, outbound-links
- *   build) and events go to /api/event on this domain, which the Cloudflare Pages Function in
- *   functions/api/event.js forwards to plausible.io.
+ * - Plausible runs on our self-hosted Plausible CE instance (plausibleHost). When plausibleScriptId
+ *   (the site's "pa-…" script from the dashboard snippet) is set, the CE snippet is used; otherwise
+ *   the generic data-domain script with outbound-link tracking.
  */
 export const ANALYTICS = {
   ga4Id: 'G-5C9VXLMJWJ',
   gscVerification: '',
+  plausibleHost: 'https://stats.blackholeenglish.com',
   plausibleDomain: 'astraeoratio.org',
-  plausibleScript: '/js/p.js',
-  plausibleApi: '/api/event',
+  plausibleScriptId: '',
 };
 
 export const NAV = [

@@ -47,12 +47,10 @@ npm run assets       # 重新生成 favicon / OG 分享图（public/）
 
 - `ga4Id`：GA4 衡量 ID（`G-XXXXXXXXXX`），留空则不加载 gtag。
 - `gscVerification`：Search Console「HTML 标记」验证的 content 值，留空则不输出。
-- Plausible 完全本地化（第一方）：
-  - 脚本是本站托管的 `public/js/p.js`（plausible.io 官方 `script.outbound-links.js`，含外链点击统计），`data-domain` 为 `astraeoratio.org`。
-  - 事件发到本站 `/api/event`，由 Cloudflare Pages Function（`functions/api/event.js`）转发到 plausible.io，并带上访客 IP / UA，浏览器全程不直连 plausible.io。
-  - `public/_routes.json` 限定只有 `/api/*` 走 Functions，其余全部是静态文件，不消耗 Functions 免费额度。
-  - Plausible 后台要先添加站点 `astraeoratio.org`，否则事件会被丢弃。
-  - 本地 `npm run dev` / `preview` 时没有 Functions，`/api/event` 不存在属正常（Plausible 脚本本身也会忽略 localhost）。
+- Plausible：使用自建实例 `https://stats.blackholeenglish.com`（`plausibleHost`）。
+  - 在自建后台添加站点 `astraeoratio.org`，把它给出的代码片段里 `pa-xxxx.js` 的文件名（不含 `.js`）填到 `plausibleScriptId`，页面就会输出和 blackholeenglish.com 相同的 CE 片段。
+  - `plausibleScriptId` 留空时，退回使用实例上的 `script.outbound-links.js` + `data-domain`（含外链点击统计）。
+  - 站点没在后台添加之前，事件会被丢弃；Plausible 脚本也会忽略 localhost。
 
 ## 部署（Cloudflare Pages）
 
@@ -61,8 +59,8 @@ npm run assets       # 重新生成 favicon / OG 分享图（public/）
    - Production branch：`main`
    - Framework preset：Astro；Build command：`npm run build`；Build output directory：`dist`
    - 环境变量 `NODE_VERSION` = `22`（Astro 7 需要 Node ≥ 22.12；仓库里也有 `.nvmrc`）
-3. Pages 项目 → Custom domains：添加 `astraeoratio.org` 和 `www.astraeoratio.org`。
-4. www 跳转根域名：Cloudflare → 域名 → Rules → Redirect Rules，`www.astraeoratio.org/*` 301 到 `https://astraeoratio.org/${1}`。
+3. Pages 项目（`astrae-oratio`，预览地址 `astrae-oratio.pages.dev`）→ Custom domains：添加 `astraeoratio.org`（要等域名在 Cloudflare 里变成 Active 才能添加）。
+4. www 跳转根域名：DNS 里 `www` 是指向根域名的 CNAME（已开代理），再在 Rules → Redirect Rules 里把 `www.astraeoratio.org/*` 301 到 `https://astraeoratio.org/${1}`。
 5. 之后每次 push 到 `main` 自动构建上线。
 
 `public/_headers` 为 `/_astro/*` 带哈希的静态资源设置了一年强缓存。
