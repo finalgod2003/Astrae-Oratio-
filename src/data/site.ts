@@ -20,7 +20,7 @@ export const ANALYTICS = {
   gscVerification: '',
   plausibleHost: 'https://stats.blackholeenglish.com',
   plausibleDomain: 'astraeoratio.org',
-  plausibleScriptId: '',
+  plausibleScriptId: 'pa-JYA-wLD9OhFNpTex6ExYu',
 };
 
 export const NAV = [
