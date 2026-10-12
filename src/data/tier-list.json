@@ -2,7 +2,7 @@
   "status": "upcoming",
   "updated": "2026-10-07",
   "basis": "",
-  "note": "No tier list yet: rankings need launch-build data. Set status to \"live\" and fill the tiers (character slugs from src/content/characters) to publish; the page then becomes indexable and is added to the sitemap.",
+  "note": "No tier list yet: rankings need launch-build data. The pre-launch roster and ranking-method guide is indexable and included in the sitemap. Set status to \"live\" and fill the tiers (character slugs from src/content/characters) only when real rankings are ready to display.",
   "tiers": [
     { "tier": "S", "characters": [] },
     { "tier": "A", "characters": [] },

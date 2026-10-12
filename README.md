@@ -23,8 +23,8 @@ npm run assets       # 重新生成 favicon / OG 分享图（public/）
 | 世界观 | `/world/` | 专有名词 | 官方 World 页 |
 | 术语表 | `/glossary/` | 专有名词 / 道具名 | 官方站 + CBT 公告 |
 | 系统解析 | `/guides/combat/`、`/guides/gacha/`、`/guides/progression/` | 战斗 / 抽卡 / 养成 | CBT Guidebook、TGS 报道、玩家实测（均标注来源） |
-| 强度榜 | `/tier-list/` | astrae oratio tier list | 待实机数据（当前 noindex） |
-| 兑换码 / 重抽 | `/codes/` | astrae oratio codes / reroll | 待上线（当前 noindex） |
+| 强度榜 | `/tier-list/` | astrae oratio tier list | 当前为可收录的 CBT 角色与排名方法说明；正式排名待实机数据 |
+| 兑换码 / 重抽 | `/codes/` | astrae oratio codes / reroll | 当前为可收录的上线前说明；真实兑换码待发布 |
 | 新闻 / 更新日志 | `/news/`、`/news/<slug>/`、`/rss.xml` | 游戏名 + news / update | 官方公告、官方 X |
 
 ## 内容在哪里改
@@ -38,8 +38,8 @@ npm run assets       # 重新生成 favicon / OG 分享图（public/）
 
 ### 兑换码和强度榜上线
 
-`src/data/codes.json` 与 `src/data/tier-list.json` 里的 `status` 现在是 `"upcoming"`：页面带 `noindex`，且不进 sitemap。
-填好数据后把 `status` 改成 `"live"`，页面会自动去掉 noindex、加入 sitemap，首页卡片文案也会跟着变。
+`src/data/codes.json` 与 `src/data/tier-list.json` 里的 `status` 现在是 `"upcoming"`，用于显示真实的上线前说明。按用户于 2026-10-12 的要求，这两页现已允许收录并加入 sitemap，收录不再依赖 `status`。
+有真实数据后再把 `status` 改成 `"live"`，页面会显示兑换码表或角色排名，首页卡片文案也会跟着变。不要仅为开放收录把空数据改成 `"live"`。
 
 ## 统计与站长工具
 
@@ -60,10 +60,21 @@ npm run assets       # 重新生成 favicon / OG 分享图（public/）
    - Framework preset：Astro；Build command：`npm run build`；Build output directory：`dist`
    - 环境变量 `NODE_VERSION` = `22`（Astro 7 需要 Node ≥ 22.12；仓库里也有 `.nvmrc`）
 3. Pages 项目（`astrae-oratio`，预览地址 `astrae-oratio.pages.dev`）→ Custom domains：添加 `astraeoratio.org`（要等域名在 Cloudflare 里变成 Active 才能添加）。
-4. www 跳转根域名：DNS 里 `www` 是指向根域名的 CNAME（已开代理），再在 Rules → Redirect Rules 里把 `www.astraeoratio.org/*` 301 到 `https://astraeoratio.org/${1}`。
+4. www 跳转根域名：DNS 里 `www` 是指向根域名的 CNAME（已开代理）。在 Rules → Redirect Rules 中使用以下通配符规则，同时覆盖 HTTP 和 HTTPS：
+   - Request URL：`http*://www.astraeoratio.org/*`
+   - Target URL：`https://astraeoratio.org/${2}`（第二个通配符才是路径，第一个匹配协议中的 `s` 或空字符串）
+   - Status code：`301`；Preserve query string：开启，以保留查询参数和已有 UTM。
+   - 不要直接沿用只匹配 `https://www.*` 的模板，否则 `http://www.astraeoratio.org/` 可能绕过规则并返回 522。
 5. 之后每次 push 到 `main` 自动构建上线。
 
 `public/_headers` 为 `/_astro/*` 带哈希的静态资源设置了一年强缓存。
+
+### Search Console 索引提示
+
+- `被“noindex”标记排除了`：`/codes/` 和 `/tier-list/` 已开放收录；若报告仍显示历史排除，请检查线上页面并在修复部署后发起验证。404 页面仍应保持 `noindex`。
+- `网页会自动重定向`：`https://www.astraeoratio.org/` 会永久跳转到 `https://astraeoratio.org/`，这是正常的主域名规范化。检查目标页是否可收录，不要取消正确的 301，也不要把重定向来源加入 sitemap。
+- 对真正修改过索引规则的页面，部署并核验线上响应后再发起“验证修正情况”；有意排除或正常重定向无需验证。
+- 排查时核对最终 HTTP 状态、`Location`、HTML robots、`X-Robots-Tag`、canonical 和 sitemap。只看“未编入索引”的总数不能判断网站故障。
 
 ## 版权与官方素材
 
